@@ -1,11 +1,11 @@
-module ALU (input [15:0] a, b, input ci, nb, ic, zb, na, xo, no, output [15:0] out, output co);
+module ALU (input [15:0] a, b, input ci, nb, ic, na, xo, no, output [15:0] out, output co);
 
 wire [15:0] carry_in, carry_out, carry, x, y, and_ab, z;
 
 assign carry_in[0] = ci;
 
 for (genvar i = 0; i < 16; i = i + 1) begin
-  assign y[i] = (b[i] & ~zb) ^ nb;
+  assign y[i] = b[i] ^ nb;
   assign carry[i] = carry_in[i] & ~ic;
   assign x[i] = a[i] ^ na;
   assign and_ab[i] = x[i] & y[i] & xo;
