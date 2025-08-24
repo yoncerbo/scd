@@ -4,7 +4,7 @@
 module tb_alu;
 
 reg ci, nb, ic, na, xo, no, sr, ss;
-wire co;
+wire cf, sf, zf;
 reg [15:0] a, b;
 wire [15:0] out;
 wire signed [15:0] sout;
@@ -15,7 +15,7 @@ ALU alu(
   a, b,
   ci, nb, ic, na, xo, no, sr, ss,
   out,
-  co
+  cf, sf, zf
 );
 
 initial begin
@@ -42,6 +42,7 @@ initial begin
   a = 7;
   b = -9;
   #1 `ASSERT(sout, -2);
+  `ASSERT(sf, 1);
 
   // Biggest unsigned number in out
   a = 65534;
@@ -52,7 +53,8 @@ initial begin
   a = 65534;
   b = 2;
   #1 `ASSERT(out, 0);
-  `ASSERT(co, 1);
+  `ASSERT(cf, 1);
+  `ASSERT(zf, 1);
 
   // Subtraction
   ci = 1;
