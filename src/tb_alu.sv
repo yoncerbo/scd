@@ -3,7 +3,7 @@
 
 module tb_alu;
 
-reg ci, nb, ic, na, xo, no;
+reg ci, nb, ic, na, xo, no, sr, ss;
 wire co;
 reg [15:0] a, b;
 wire [15:0] out;
@@ -11,7 +11,12 @@ wire signed [15:0] sout;
 
 assign sout = out;
 
-ALU alu(a, b, ci, nb, ic, na, xo, no, out, co);
+ALU alu(
+  a, b,
+  ci, nb, ic, na, xo, no, sr, ss,
+  out,
+  co
+);
 
 initial begin
   ci = 0;
@@ -20,6 +25,8 @@ initial begin
   na = 0;
   xo = 0;
   no = 0;
+  sr = 0;
+  ss = 0;
 
   // Addition
   a = 9;
@@ -129,9 +136,18 @@ initial begin
   #1 `ASSERT(out, 8);
 
   // Shift right
+  sr = 1;
+  ss = 0;
+  a = 4;
+  b = 0;
+  #1 `ASSERT(out, 2);
 
-  // TODO: Shift right
-  // TODO: Shift right signed
+  // Shift right arithmetic
+  sr = 1;
+  ss = 1;
+  a = -4;
+  b = 0;
+  #1 `ASSERT(sout, -2);
 
   $finish;
 end
