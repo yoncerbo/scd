@@ -119,7 +119,21 @@ initial begin
   b = 9;
   #1 `ASSERT(out, 8);
 
-  // TODO: Shift left
+  // Shift left - multiply by 2
+  // 2x = x + x, also sets carry out
+  ci = 0;
+  zb = 0;
+  ic = 0;
+  na = 0;
+  nb = 0;
+  no = 0;
+  xo = 0;
+  a = 4;
+  b = a;
+  #1 `ASSERT(out, 8);
+
+  // Shift right
+
   // TODO: Shift right
   // TODO: Shift right signed
 
