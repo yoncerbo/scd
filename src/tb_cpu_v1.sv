@@ -41,20 +41,20 @@ end
 
 initial begin
   clk <= 0;
-  inst <= 'hf00a; // load 10 into x0
-  #2 `ASSERT(register_file.registers[0], 10);
+  inst <= 'hf10a; // load 10 into x1
+  #2 `ASSERT(register_file.registers[1], 10);
 
-  inst <= 'hf102; // load 2 into x1
-  #2 `ASSERT(register_file.registers[1], 2);
+  inst <= 'hf202; // load 2 into x2
+  #2 `ASSERT(register_file.registers[2], 2);
 
-  inst <= 'h0001; // add x0 and x1 into x0
-  #2 `ASSERT(register_file.registers[0], 12);
+  inst <= 'h0112; // add x1 and x2 into x1
+  #2 `ASSERT(register_file.registers[1], 12);
 
-  inst <= 'hf103; // load 3 into x1
-  #2 `ASSERT(register_file.registers[1], 3);
+  inst <= 'hf203; // load 3 into x2
+  #2 `ASSERT(register_file.registers[2], 3);
 
-  inst <= 'h1001; // subtract x1 from x0 into x0
-  #2 `ASSERT(register_file.registers[0], 9);
+  inst <= 'h1112; // subtract x2 from x1 into x1
+  #2 `ASSERT(register_file.registers[1], 9);
 
   $finish();
 end
