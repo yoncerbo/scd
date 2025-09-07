@@ -1,5 +1,5 @@
 module RegisterFile (
-  input clk,
+  input clk, we,
   input [3:0] sel_in, sel_o1, sel_o2,
   input [7:0] in,
   output [7:0] o1, o2);
@@ -13,7 +13,7 @@ initial begin
 end
 
 always @(posedge clk) begin
-  if (sel_in) registers[sel_in] <= in;
+  if (sel_in && we) registers[sel_in] <= in;
 end
 
 assign o1 = registers[sel_o1];
