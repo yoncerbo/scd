@@ -1,5 +1,6 @@
 `include "gated_latch.sv"
 
+/*
 module Register (input we, input [7:0] d_in, output [7:0] d_out);
 
 for (genvar i = 0; i < 8; i = i + 1) begin
@@ -7,13 +8,15 @@ for (genvar i = 0; i < 8; i = i + 1) begin
 end
 
 endmodule;
+*/
 
 module RegisterFile (
-  input we,
+  input clk,
   input [3:0] sel_in, sel_o1, sel_o2,
   input [7:0] in,
   output [7:0] o1, o2);
 
+/*
 wire [7:0] outs [15:0];
 
 for (genvar i = 0; i < 16; i = i + 1) begin
@@ -23,5 +26,15 @@ end
 
 assign o1 = outs[sel_o1];
 assign o2 = outs[sel_o2];
+*/
+
+reg [7:0] registers [15:0];
+
+always @(posedge clk) begin
+  registers[sel_in] <= in;
+end
+
+assign o1 = registers[sel_o1];
+assign o2 = registers[sel_o2];
 
 endmodule;
