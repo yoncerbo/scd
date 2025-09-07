@@ -1,34 +1,37 @@
+`include "assert.sv"
 `include "memory.sv"
 
-module tb_memory_1bit;
+module tb_memory;
 
-reg we, re, d_in;
-reg [0:3] addr;
-wire data;
-wire d_out;
+reg clk, we;
 
-assign data = (we == 1'b1) ? d_in : 1'bz;
+reg [7:0] addr, in;
+wire [7:0] out;
 
-Memory_1bit mem(we, re, addr, data);
+Memory mem(clk, we, addr, in, out);
+
+always @(posedge clk) #1 clk <= ~clk;
+always @(negedge clk) #1 clk <= ~clk;
 
 initial begin
-  we = 1;
-  re = 0;
-  addr = 0;
-  d_in = 1;
+  clk <= 0;
 
-  #1
-  we = 0;
-  re = 1;
-  addr = 0;
+  addr <= 0;
+  in <= 10;
+  we <= 1;
+  #2 `ASSERT(out, 10);
 
-  #1
-  $display(d_out);
+  addr <= 1;
+  in <= 11;
+  we <= 1;
+  #2 `ASSERT(out, 11);
 
-  #1
-  $display(d_out);
+  addr <= 0;
+  in <= 12;
+  we <= 0;
+  #2 `ASSERT(out, 10);
 
-  
+  $finish();
 end
 
 endmodule;
