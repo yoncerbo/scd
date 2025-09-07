@@ -19,11 +19,16 @@ assign ldi = ctrl_flags[0];
 wire reg_we;
 wire [2:0] flags;
 wire [7:0] imm;
-wire [7:0] alu_flags, alu_out, reg_in, reg_o1, reg_o2, mem_out;
+wire [7:0] alu_flags, alu_out, reg_in, reg_o1, reg_o2, mem_addr;
+wire [15:0] mem_out, mem_in;
 
 assign imm = inst[7:0];
-assign reg_in = ldi == 0 ? (mem_re == 0 ? alu_out : mem_out) : imm;
+assign reg_in = ldi == 0 ? (mem_re == 0 ? alu_out :
+  (mem_addr[0] == 0 ? mem_out[7:0] : mem_out[15:8])) : imm;
 assign reg_we = ~mem_we;
+assign mem_addr = reg_o1;
+assign mem_in[7:0] = mem_addr[0] == 0 ? reg_o2 : mem_out[7:0];
+assign mem_in[15:8] = mem_addr[0] == 1 ? reg_o2 : mem_out[15:8];
 
 InstRom inst_rom(inst[15:12], alu_flags, ctrl_flags);
 
@@ -41,7 +46,7 @@ ALU alu(
   flags[2], flags[1], flags[0]
 );
 
-Memory mem(clk, mem_we, reg_o1, reg_o2, mem_out);
+Memory mem(clk, mem_we, mem_addr[7:1], mem_in, mem_out);
 
 always @(posedge clk) #1 clk <= ~clk;
 always @(negedge clk) #1 clk <= ~clk;
@@ -71,7 +76,7 @@ initial begin
   #2 `ASSERT(register_file.registers[2], 10);
 
   inst <= 'hD012; // store value in x2 into memory at addresss in x1
-  #2 `ASSERT(mem.memory[4], 10);
+  #2 `ASSERT(mem.memory[2], 10);
 
   inst <= 'hE310; // load into register x3 value in memory at address x1
   #2 `ASSERT(register_file.registers[3], 10);
