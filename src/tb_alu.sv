@@ -5,9 +5,9 @@ module tb_alu;
 
 reg ci, nb, ic, na, xo, no, sr, ss;
 wire cf, sf, zf;
-reg [15:0] a, b;
-wire [15:0] out;
-wire signed [15:0] sout;
+reg [7:0] a, b;
+wire [7:0] out;
+wire signed [7:0] sout;
 
 assign sout = out;
 
@@ -45,12 +45,12 @@ initial begin
   `ASSERT(sf, 1);
 
   // Biggest unsigned number in out
-  a = 65534;
+  a = 254;
   b = 1;
-  #1 `ASSERT(out, 65535);
+  #1 `ASSERT(out, 255);
 
   // Overflow
-  a = 65534;
+  a = 254;
   b = 2;
   #1 `ASSERT(out, 0);
   `ASSERT(cf, 1);
@@ -93,7 +93,7 @@ initial begin
   ic = 1;
   a = 16;
   b = 0;
-  #1 `ASSERT(out, 65519);
+  #1 `ASSERT(out, 239);
 
   // Negate
   ci = 1;
