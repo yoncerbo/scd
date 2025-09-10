@@ -66,14 +66,17 @@ initial begin
     mem.memory[i] <= 0;
   end
 
+  #1 $readmemh("inst.txt", mem.memory, 0, 2);
+
+  $display("%h", mem.memory[0]);
+  $display("%h", mem.memory[1]);
+  $display("%h", mem.memory[2]);
+  $display("%h", mem.memory[3]);
+
   fetch_inst <= 1;
   inst <= 0;
   clk <= 0;
   pc <= 0;
-
-  mem.memory[0] <= 'hF10a;
-  mem.memory[1] <= 'hF202;
-  mem.memory[2] <= 'h0312;
 
   #4 `ASSERT(register_file.registers[1], 10);
   #4 `ASSERT(register_file.registers[2], 2);
