@@ -66,12 +66,7 @@ initial begin
     mem.memory[i] <= 0;
   end
 
-  #1 $readmemh("inst.txt", mem.memory, 0, 2);
-
-  $display("%h", mem.memory[0]);
-  $display("%h", mem.memory[1]);
-  $display("%h", mem.memory[2]);
-  $display("%h", mem.memory[3]);
+  #1 $readmemh("code.txt", mem.memory, 0, 127);
 
   fetch_inst <= 1;
   inst <= 0;

@@ -1,0 +1,23 @@
+[
+  {
+    "arguments": [
+      "/nix/store/bcw9f6r9v2fm3kv7d15fcrya0mf34xds-gcc-wrapper-14.3.0/bin/gcc",
+      "-c",
+      "-std=c99",
+      "-Wall",
+      "-Wextra",
+      "-I",
+      "./src/headers",
+      "-I",
+      "./src",
+      "-O0",
+      "-g3",
+      "-o",
+      "out/dev",
+      "src/main.c"
+    ],
+    "directory": "/s/scd/asm",
+    "file": "/s/scd/asm/src/main.c",
+    "output": "/s/scd/asm/out/dev"
+  }
+]
