@@ -8,6 +8,9 @@ module tb_cpu_v1;
 
 reg clk;
 
+reg fetch_inst;
+
+reg [6:0] pc;
 reg [15:0] inst;
 wire [2:0] ctrl_flags;
 wire mem_we, mem_re, ldi;
@@ -25,8 +28,8 @@ wire [15:0] mem_out, mem_in;
 assign imm = inst[7:0];
 assign reg_in = ldi == 0 ? (mem_re == 0 ? alu_out :
   (mem_addr[0] == 0 ? mem_out[7:0] : mem_out[15:8])) : imm;
-assign reg_we = ~mem_we;
-assign mem_addr = reg_o1;
+assign reg_we = ~(fetch_inst | mem_we);
+assign mem_addr = fetch_inst == 1 ? {pc, 1'b0} : reg_o1;
 assign mem_in[7:0] = mem_addr[0] == 0 ? reg_o2 : mem_out[7:0];
 assign mem_in[15:8] = mem_addr[0] == 1 ? reg_o2 : mem_out[15:8];
 
@@ -48,39 +51,33 @@ ALU alu(
 
 Memory mem(clk, mem_we, mem_addr[7:1], mem_in, mem_out);
 
-always @(posedge clk) #1 clk <= ~clk;
 always @(negedge clk) #1 clk <= ~clk;
+always @(posedge clk) begin
+  if (fetch_inst) begin
+    inst <= mem_out;
+    pc <= pc + 1;
+  end
+  fetch_inst <= !fetch_inst;
+  #1 clk <= ~clk;
+end
 
 initial begin
+  for (integer i = 0; i < 128; i = i + 1) begin
+    mem.memory[i] <= 0;
+  end
+
+  fetch_inst <= 1;
+  inst <= 0;
   clk <= 0;
+  pc <= 0;
 
-  inst <= 'hF10a; // load 10 into x1
-  #2 `ASSERT(register_file.registers[1], 10);
+  mem.memory[0] <= 'hF10a;
+  mem.memory[1] <= 'hF202;
+  mem.memory[2] <= 'h0312;
 
-  inst <= 'hF202; // load 2 into x2
-  #2 `ASSERT(register_file.registers[2], 2);
-
-  inst <= 'h0112; // add x1 and x2 into x1
-  #2 `ASSERT(register_file.registers[1], 12);
-
-  inst <= 'hF203; // load 3 into x2
-  #2 `ASSERT(register_file.registers[2], 3);
-
-  inst <= 'h1112; // subtract x2 from x1 into x1
-  #2 `ASSERT(register_file.registers[1], 9);
-
-  inst <= 'hF104; // load 4 into x1
-  #2 `ASSERT(register_file.registers[1], 4);
-
-  inst <= 'hF20a; // load 10 into x2
-  #2 `ASSERT(register_file.registers[2], 10);
-
-  inst <= 'hD012; // store value in x2 into memory at addresss in x1
-  #2 `ASSERT(mem.memory[2], 10);
-
-  inst <= 'hE310; // load into register x3 value in memory at address x1
-  #2 `ASSERT(register_file.registers[3], 10);
-
+  #4 `ASSERT(register_file.registers[1], 10);
+  #4 `ASSERT(register_file.registers[2], 2);
+  #4 `ASSERT(register_file.registers[3], 12);
 
   $finish();
 end
