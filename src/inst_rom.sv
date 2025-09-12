@@ -46,6 +46,14 @@ always @(opcode) begin
       alu_flags <= 0;
       ctrl_flags <= 8'b00011000;
     end
+    'h8: begin // jli
+      alu_flags <= 0;
+      ctrl_flags <= 8'b00101000;
+    end
+    'hC: begin // adi
+      alu_flags <= 0;
+      ctrl_flags <= 8'b01000000;
+    end
     'hD: begin // stb
       alu_flags <= 0;
       ctrl_flags <= 8'b00000100;

@@ -6,13 +6,15 @@ module ControlUnit(
   output [7:0] mem_addr,
   output [15:0] mem_in,
   output reg [15:0] inst,
-  output [7:0] reg_in,
+  output [7:0] reg_in, alu_b,
   output reg_we, mem_we
 );
 
-wire ipc, wpc, spc, mem_re, ldi;
+wire adi, ipc, wpc, spc, mem_re, ldi;
 wire [7:0] imm;
 
+assign adi = ctrl_flags[6];
+assign ipc = ctrl_flags[5];
 assign wpc = ctrl_flags[4];
 assign spc = ctrl_flags[3];
 assign mem_we = ctrl_flags[2];
@@ -32,6 +34,8 @@ assign reg_we = ~(fetch_inst | mem_we);
 assign mem_addr = fetch_inst == 1 ? {pc, 1'b0} : reg_o1;
 assign mem_in[7:0] = mem_addr[0] == 0 ? reg_o2 : mem_out[7:0];
 assign mem_in[15:8] = mem_addr[0] == 1 ? reg_o2 : mem_out[15:8];
+
+assign alu_b = adi == 1 ? {inst[3], inst[3], inst[3], inst[3], inst[3:0]} : reg_o2;
 
 initial begin
   fetch_inst <= 1;

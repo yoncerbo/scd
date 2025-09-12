@@ -26,14 +26,13 @@ initial begin
   #1
   mem.memory[0] <= 'hF10A;
   mem.memory[1] <= 'hF202;
-  mem.memory[2] <= 'h7312;
+  mem.memory[2] <= 'hC307;
 
   clk <= 0;
 
   #4 $display(cpu.register_file.registers[1]);
   #4 $display(cpu.register_file.registers[2]);
-  #4 $display(cpu.register_file.registers[3]);
-  $display("pc=", {cpu.ctrl.pc, 1'b0});
+  #4 $display($signed(cpu.register_file.registers[3]));
 
   // #4 `ASSERT(cpu.register_file.registers[1], 10);
   // #4 `ASSERT(cpu.register_file.registers[2], 2);

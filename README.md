@@ -35,16 +35,16 @@ Register x1 is a used in pseudo instructions for storing the return address.
 | AND | logical and | 4 | R | `r0 = r1 & r2` |
 | SRL | shift right logical | 5 | S | `r0 = r1 >> 1` |
 | SRA | shift right arithmetic | 6 | S | `r0 = r1 >> 1` |
+| JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` |
+| JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` |
+| ADI | add 4-bit signed immediate | C | N | `r0 = r1 + imm` |
 | STB | store byte | D | R | `memory[r1] = r2` |
 | LDB | load byte | E | R | `r0 = memory[r1]` |
 | LDI | load immediate | F | R | `r0 = imm` |
-| JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` |
-| JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` |
 | | | 8 | | |
 | | | 9 | | |
 | | | A | | |
 | | | B | | |
-| | | C | | |
 
 #### Notes
 Jumps and branches ignore least significant bit in the address.
@@ -56,6 +56,7 @@ Jumps and branches ignore least significant bit in the address.
 | R | op | r0 | r1 | r2 |
 | S | op | r0 | r1 | ignored  |
 | I | op | r0 | imm hi | imm lo |
+| N | op | r0 | r1 | imm |
 
 ### Pseudo instructions
 
@@ -70,3 +71,5 @@ Jumps and branches ignore least significant bit in the address.
 | CSI | call subroutine immediate | imm | `JLR ra, imm` |
 | CSR | call subroutine register | r0, r1 | `JLR ra, r0, r1` |
 | RET | return from subroutine | | `JLR zero, ra, zero` |
+| INC | increment | r0, r1 | `ADI r0, r1, 1` |
+| DEC | decrement | r0, r1 | `ADI r0, r1, -1` |
