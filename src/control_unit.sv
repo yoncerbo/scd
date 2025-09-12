@@ -10,7 +10,7 @@ module ControlUnit(
   output reg_we, mem_we
 );
 
-wire wpc, spc, mem_re, ldi;
+wire ipc, wpc, spc, mem_re, ldi;
 wire [7:0] imm;
 
 assign wpc = ctrl_flags[4];
@@ -43,8 +43,9 @@ always @(posedge clk) begin
   if (fetch_inst) begin
     inst <= mem_out;
     pc <= pc + 1;
-  end else if (wpc) begin
-    pc <= alu_out[7:1];
+  end else begin
+    if (wpc) pc <= alu_out[7:1];
+    else if (ipc) pc <= imm;
   end
   fetch_inst = ~fetch_inst;
 end

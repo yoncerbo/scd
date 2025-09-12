@@ -65,6 +65,8 @@ Jumps and branches ignore least significant bit in the address.
 | NOT | logical not | r0, r1 | `NOR r0, r1, r1` |
 | SLL | shift left logical | r0, r1 | `ADD r0, r1, r1` |
 | NEG | negation | r0, r1 | `SUB r0, zero, r1` |
-| CSI | call subroutine immediate | imm | `JLR ra, imm`
+| JMR | jump register | r0, r1 | `JLR x0, r0, r1` |
+| JMI | jump immediate | imm | `JLR x0, imm` |
+| CSI | call subroutine immediate | imm | `JLR ra, imm` |
 | CSR | call subroutine register | r0, r1 | `JLR ra, r0, r1` |
 | RET | return from subroutine | | `JLR zero, ra, zero` |
