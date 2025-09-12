@@ -19,17 +19,17 @@ Register x0 is a zero register (hard-wired to zero) - always reads 0 and writes 
 
 | Name | Description | Op | Type | Effect |
 | --- | --- | --- | --- | --- |
-| ADD | add | 0 | A | `r0 = r1 + r2` |
-| SUB | subtract | 1 | A | `r0 = r1 - r2` |
-| XOR | logical xor | 2 | A | `r0 = r1 ^ r2` |
-| NOR | logical nor | 3 | A | `r0 = ~(r1 \| r2)` |
-| AND | logical and | 4 | A | `r0 = r1 & r2` |
+| ADD | add | 0 | R | `r0 = r1 + r2` |
+| SUB | subtract | 1 | R | `r0 = r1 - r2` |
+| XOR | logical xor | 2 | R | `r0 = r1 ^ r2` |
+| NOR | logical nor | 3 | R | `r0 = ~(r1 \| r2)` |
+| AND | logical and | 4 | R | `r0 = r1 & r2` |
 | SRL | shift right logical | 5 | S | `r0 = r1 >> 1` |
 | SRA | shift right arithmetic | 6 | S | `r0 = r1 >> 1` |
-| STB | store byte | D | A | `memory[r1] = r2` |
-| LDB | load byte | E | A | `r0 = memory[r1]` |
-| LDI | load immediate | F | L | `r0 = imm` |
-| JLR | jump and link register | 7 | A | `r0 = pc + 2; pc = r1 + r2`|
+| STB | store byte | D | R | `memory[r1] = r2` |
+| LDB | load byte | E | R | `r0 = memory[r1]` |
+| LDI | load immediate | F | R | `r0 = imm` |
+| JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2`|
 | | | 8 | | |
 | | | 9 | | |
 | | | A | | |
@@ -40,9 +40,9 @@ Register x0 is a zero register (hard-wired to zero) - always reads 0 and writes 
 
 | Type | 15:12 | 11:8 | 7:4 | 3:0 |
 | --- | --- | --- | --- | --- |
-| A | op | r0 | r1 | r2 |
+| R | op | r0 | r1 | r2 |
 | S | op | r0 | r1 | ignored  |
-| L | op | r0 | imm hi | imm lo |
+| I | op | r0 | imm hi | imm lo |
 
 ### Pseudo instructions
 
