@@ -5,10 +5,11 @@
 module tb_cpu_v1;
 
 reg clk;
+wire mem_we;
 wire [7:0] mem_addr;
 wire [15:0] mem_in, mem_out;
 
-CPU cpu(clk, mem_out, mem_addr, mem_in);
+CPU cpu(clk, mem_out, mem_we, mem_addr, mem_in);
 
 Memory mem(clk, mem_we, mem_addr[7:1], mem_in, mem_out);
 
@@ -32,7 +33,7 @@ initial begin
   #4 $display(cpu.register_file.registers[1]);
   #4 $display(cpu.register_file.registers[2]);
   #4 $display(cpu.register_file.registers[3]);
-  $display("pc=", {cpu.pc, 1'b0});
+  $display("pc=", {cpu.ctrl.pc, 1'b0});
 
   // #4 `ASSERT(cpu.register_file.registers[1], 10);
   // #4 `ASSERT(cpu.register_file.registers[2], 2);
