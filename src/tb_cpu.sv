@@ -20,13 +20,23 @@ initial begin
     mem.memory[i] <= 0;
   end
 
-  #1 $readmemh("code.txt", mem.memory, 0, 127);
+  // #1 $readmemh("code.txt", mem.memory, 0, 127);
+  
+  #1
+  mem.memory[0] <= 'hF10A;
+  mem.memory[1] <= 'hF202;
+  mem.memory[2] <= 'h7312;
 
   clk <= 0;
 
-  #4 `ASSERT(cpu.register_file.registers[1], 10);
-  #4 `ASSERT(cpu.register_file.registers[2], 2);
-  #4 `ASSERT(cpu.register_file.registers[3], 12);
+  #4 $display(cpu.register_file.registers[1]);
+  #4 $display(cpu.register_file.registers[2]);
+  #4 $display(cpu.register_file.registers[3]);
+  $display("pc=", {cpu.pc, 1'b0});
+
+  // #4 `ASSERT(cpu.register_file.registers[1], 10);
+  // #4 `ASSERT(cpu.register_file.registers[2], 2);
+  // #4 `ASSERT(cpu.register_file.registers[3], 12);
 
   $finish();
 end

@@ -29,7 +29,7 @@ Register x0 is a zero register (hard-wired to zero) - always reads 0 and writes 
 | STB | store byte | D | A | `memory[r1] = r2` |
 | LDB | load byte | E | A | `r0 = memory[r1]` |
 | LDI | load immediate | F | L | `r0 = imm` |
-| | | 7 | | |
+| JLR | jump and link register | 7 | A | `r0 = pc + 2; pc = r1 + r2`|
 | | | 8 | | |
 | | | 9 | | |
 | | | A | | |

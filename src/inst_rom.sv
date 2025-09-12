@@ -2,8 +2,8 @@
 module InstRom(
   input [3:0] opcode,
   output reg [7:0] alu_flags,
-  // mw mr ld
-  output reg [2:0] ctrl_flags
+  // wpc spc mw mr ld
+  output reg [7:0] ctrl_flags
 );
 
 initial begin
@@ -42,20 +42,24 @@ always @(opcode) begin
       alu_flags <= 8'b00000011; 
       ctrl_flags <= 0;
     end
+    'h7: begin // jlr
+      alu_flags <= 0;
+      ctrl_flags <= 8'b00011000;
+    end
     'hD: begin // stb
       alu_flags <= 0;
-      ctrl_flags <= 3'b100;
+      ctrl_flags <= 8'b00000100;
     end
     'hE: begin // ldb
       alu_flags <= 0;
-      ctrl_flags <= 3'b010;
+      ctrl_flags <= 8'b00000010;
     end
     'hF: begin // ldi
       alu_flags <= 0;
-      ctrl_flags <= 3'b001;
+      ctrl_flags <= 8'b00000001;
     end
     default: begin
-      alu_flags <= 8'b00000000;
+      alu_flags <= 0;
       ctrl_flags <= 0;
     end
   endcase
