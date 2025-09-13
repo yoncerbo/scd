@@ -6,6 +6,7 @@
 
 #include "fs.c"
 #include "asm.c"
+#include "tokenizer.c"
 
 const char *USAGE = \
 "USAGE: %s in_path [-o out_path] [-f format]";
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
   assert(file.ptr);
 
   Asm asm;
-  Asm_assemble(file, &asm);
+  Asm_assemble(file.ptr, &asm);
 
   FILE *out_file;
   switch (output_format) {

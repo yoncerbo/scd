@@ -7,24 +7,6 @@
 #include "common.h"
 #include "inst.h"
 
-#define MEM_SIZE 256
-#define MAX_SYMBOLS 256
-
-const char OPCODES[OP_COUNT][4] = {
-  [OP_ADD] = "add",
-  [OP_LDI] = "ldi",
-};
-
-typedef struct {
-  uint8_t memory[MEM_SIZE];
-  uint8_t symbols[MAX_SYMBOLS];
-  uint16_t mem_pos;
-} Asm;
-
-void Asm_assemble(Str file, Asm *a);
-
-void write_inst_hex(FILE *file, const uint8_t source[MEM_SIZE]);
-
 typedef enum {
   TOK_NONE,
   TOK_DECIMAL,
@@ -54,5 +36,34 @@ typedef struct {
 #define MAX_TOKENS 256
 
 uint16_t tokenize(const char *source, Token token_arr[MAX_TOKENS]);
+
+#define MEM_SIZE 256
+#define MAX_SYMBOLS 256
+
+typedef struct {
+  char name[3];
+  uint8_t opcode;
+} Inst;
+
+const Inst INSTRUCTIONS[] = {
+  { "add", OP_ADD },
+  { "ldi", OP_LDI },
+};
+
+const uint32_t INSTRUCTIONS_LEN = sizeof(INSTRUCTIONS) / sizeof(Inst);
+
+typedef struct {
+  Token tokens[MAX_TOKENS];
+  uint8_t memory[MEM_SIZE];
+  uint8_t symbols[MAX_SYMBOLS];
+  const char *source;
+  uint16_t mem_pos;
+  uint16_t tok_pos;
+} Asm;
+
+void Asm_assemble(const char *source, Asm *a);
+
+void write_inst_hex(FILE *file, const uint8_t source[MEM_SIZE]);
+
 
 #endif

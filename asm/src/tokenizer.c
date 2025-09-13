@@ -11,9 +11,6 @@ uint16_t tokenize(const char *source, Token token_arr[MAX_TOKENS]) {
   const char *ch = source;
 
   while (*ch) {
-    const char *start = ch;
-    TokenTag tag = TOK_NONE;
-
     // Skip whitespaces
     while (*ch == ' ') ch++;
 
@@ -24,6 +21,9 @@ uint16_t tokenize(const char *source, Token token_arr[MAX_TOKENS]) {
       ch++;
       continue;
     }
+
+    const char *start = ch;
+    TokenTag tag = TOK_NONE;
 
     if (*ch == '\n') {
       tag = TOK_NEWLINE;
@@ -51,6 +51,9 @@ uint16_t tokenize(const char *source, Token token_arr[MAX_TOKENS]) {
       .len = ch - start,
     };
   }
+
+  assert(token_len < MAX_TOKENS);
+  token_arr[token_len++] = (Token){0};
 
   return token_len;
 }
