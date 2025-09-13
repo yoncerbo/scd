@@ -40,14 +40,36 @@ uint16_t tokenize(const char *source, Token token_arr[MAX_TOKENS]);
 #define MEM_SIZE 256
 #define MAX_SYMBOLS 256
 
+typedef enum {
+  FORMAT_NONE,
+  FORMAT_REG3,
+  FORMAT_REG2,
+  FORMAT_IMM,
+  FORMAT_SIMM,
+  FORMAT_COND,
+} InstFormat;
+
 typedef struct {
   char name[3];
   uint8_t opcode;
+  InstFormat format;
 } Inst;
 
 const Inst INSTRUCTIONS[] = {
-  { "add", OP_ADD },
-  { "ldi", OP_LDI },
+  { "add", OP_ADD, FORMAT_REG3 },
+  { "sub", OP_SUB, FORMAT_REG3 },
+  { "xor", OP_XOR, FORMAT_REG3 },
+  { "nor", OP_NOR, FORMAT_REG3 },
+  { "and", OP_AND, FORMAT_REG3 },
+  { "srl", OP_SRL, FORMAT_REG3 },
+  { "sra", OP_SRA, FORMAT_REG3 },
+  { "jlr", OP_JLR, FORMAT_REG3 },
+  { "jli", OP_JLI, FORMAT_IMM },
+
+  { "adi", OP_ADI, FORMAT_SIMM },
+  { "ldi", OP_LDI, FORMAT_IMM },
+  { "ldb", OP_LDB, FORMAT_REG3 },
+  { "stb", OP_STB, FORMAT_REG3 },
 };
 
 const uint32_t INSTRUCTIONS_LEN = sizeof(INSTRUCTIONS) / sizeof(Inst);

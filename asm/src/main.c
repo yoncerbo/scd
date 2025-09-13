@@ -7,6 +7,7 @@
 #include "fs.c"
 #include "asm.c"
 #include "tokenizer.c"
+#include "error_reporting.c"
 
 const char *USAGE = \
 "USAGE: %s in_path [-o out_path] [-f format]";

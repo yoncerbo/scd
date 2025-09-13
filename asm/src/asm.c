@@ -23,13 +23,26 @@ void Asm_append_inst_imm(Asm *a, Opcode opcode, Reg r0, uint8_t imm) {
   a->mem_pos += 2;
 }
 
-uint8_t Asm_parse_register(Asm *a) {
+Reg Asm_parse_register(Asm *a) {
   Token tok = a->tokens[a->tok_pos++];
   assert(tok.tag == TOK_SYMBOL);
   assert(a->source[tok.start] == 'x');
   uint8_t reg = atoi(&a->source[tok.start + 1]);
   assert(reg < 16);
   return reg;
+}
+
+Token Asm_expected(Asm *a, TokenTag tag) {
+  Token tok = a->tokens[a->tok_pos++];
+  if (tok.tag == tag) return tok;
+  print_error(a->source, tok.start, tok.len, "Expected token %s", TOK_NAME[tag]);
+  exit(1);
+}
+
+void Asm_end_inst(Asm *a) {
+  Token tok = a->tokens[a->tok_pos];
+  if (tok.tag == TOK_NEWLINE || tok.tag == TOK_NONE) return;
+  print_error(a->source, tok.start, tok.len, "Expected end of instruction (newline or end of file)");
 }
 
 bool Asm_parse_inst(Asm *a) {
@@ -39,37 +52,57 @@ bool Asm_parse_inst(Asm *a) {
   assert(tok.tag == TOK_SYMBOL);
   assert(tok.len == 3);
 
-  uint8_t op = UINT8_MAX;
+  Inst result = (Inst){0};
   for (uint32_t i = 0; i < INSTRUCTIONS_LEN; ++i) {
     Inst inst = INSTRUCTIONS[i];
     if (inst.name[0] != a->source[tok.start + 0]) continue;
     if (inst.name[1] != a->source[tok.start + 1]) continue;
     if (inst.name[2] != a->source[tok.start + 2]) continue;
-    op = inst.opcode;
+    result = inst;
   }
 
-  switch (op) {
-    case OP_LDI:
+  if (result.format == FORMAT_NONE) {
+    print_error(a->source, tok.start, tok.len, "Unknown instruction");
+    exit(1);
+  }
+
+  switch (result.format) {
+    case FORMAT_IMM:
       uint8_t reg = Asm_parse_register(a);
-      assert(a->tokens[a->tok_pos++].tag == TOK_COMMA);
-      tok = a->tokens[a->tok_pos++];
-      assert(tok.tag == TOK_DECIMAL);
-      uint8_t imm = atoi(&a->source[tok.start]);
-      assert(a->tokens[a->tok_pos].tag == TOK_NEWLINE ||
-        a->tokens[a->tok_pos].tag == TOK_NONE);
-      Asm_append_inst_imm(a, op, reg, imm);
-      printf("ldi x%d, %d\n", reg, imm);
+      Asm_expected(a, TOK_COMMA);
+      tok = Asm_expected(a, TOK_DECIMAL);
+      int32_t imm = atoi(&a->source[tok.start]);
+      // TODO: proper range checking
+      if (imm > 255) {
+        print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 255");
+        exit(1);
+      }
+      Asm_end_inst(a);
+      Asm_append_inst_imm(a, result.opcode, reg, imm);
       break;
-    case OP_ADD:
+    case FORMAT_SIMM:
       uint8_t r0 = Asm_parse_register(a);
-      assert(a->tokens[a->tok_pos++].tag == TOK_COMMA);
+      Asm_expected(a, TOK_COMMA);
       uint8_t r1 = Asm_parse_register(a);
-      assert(a->tokens[a->tok_pos++].tag == TOK_COMMA);
+      Asm_expected(a, TOK_COMMA);
+      tok = Asm_expected(a, TOK_DECIMAL);
+      imm = atoi(&a->source[tok.start]);
+      // TODO: proper range checking
+      if (imm > 16) {
+        print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 16");
+        exit(1);
+      }
+      Asm_end_inst(a);
+      Asm_append_inst_reg(a, result.opcode, r0, r1, imm & 15);
+      break;
+    case FORMAT_REG3:
+      r0 = Asm_parse_register(a);
+      Asm_expected(a, TOK_COMMA);
+      r1 = Asm_parse_register(a);
+      Asm_expected(a, TOK_COMMA);
       uint8_t r2 = Asm_parse_register(a);
-      assert(a->tokens[a->tok_pos].tag == TOK_NEWLINE ||
-        a->tokens[a->tok_pos].tag == TOK_NONE);
-      Asm_append_inst_reg(a, op, r0, r1, r2);
-      printf("add x%d, x%d, x%d\n", r0, r1, r2);
+      Asm_end_inst(a);
+      Asm_append_inst_reg(a, result.opcode, r0, r1, r2);
       break;
     default:
       fprintf(stderr, "Unknown instruction: %.*s\n", tok.len, &a->source[tok.start]);

@@ -19,14 +19,10 @@ int main(void) {
   assert(file.len = 256);
   memcpy(e->memory, file.ptr, 256);
 
-  // uint16_t *insts = (void *)e->memory;
-  // insts[0] = 0xF10A;
-  // insts[1] = 0xF202;
-  // insts[2] = 0x0312;
-  Emu_run(e, 3);
-
+  Emu_run(e, 8);
+  DEBUGD(e->pc);
   DEBUGD(e->regs[1]);
   DEBUGD(e->regs[2]);
-  DEBUGD(e->regs[3]);
+  DEBUGD(e->regs[15]);
   return 0;
 }

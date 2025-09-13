@@ -35,12 +35,12 @@ uint16_t tokenize(const char *source, Token token_arr[MAX_TOKENS]) {
       ch++;
       while (isalnum(*ch) || *ch == '_') ch++;
       tag = TOK_SYMBOL;
-    } else if (isdigit(*ch)) {
+    } else if (isdigit(*ch) || *ch == '-') {
       ch++;
       while (isdigit(*ch)) ch++;
       tag = TOK_DECIMAL;
     } else {
-      fprintf(stderr, "Unknown character at %d\n", (int)(ch - source));
+      print_error(source, start - source, 1, "Unknown character");
       exit(1);
     }
 

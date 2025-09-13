@@ -55,4 +55,10 @@ bool CONST str_eq(Str a, Str b);
 // fs.c
 Str map_file_readonly(const char *filename);
 
+// error_reporting.c
+void print_source_span(const char *source, uint32_t start, uint16_t len);
+void print_note(const char *source, uint32_t start, uint16_t len, const char *fmt, ...);
+void print_error_message(const char *fmt, ...);
+void print_error(const char *source, uint32_t start, uint16_t len, const char *fmt, ...);
+
 #endif
