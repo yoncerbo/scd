@@ -2,7 +2,7 @@ module ALU (
   input [7:0] a, b,
   input ci, nb, ic, na, xo, no, sr, ss,
   output [7:0] out,
-  output cf, sf, zf
+  output cf, zf
 );
 
 wire [7:0] carry_in, carry_out, carry, x, y, and_ab, z;

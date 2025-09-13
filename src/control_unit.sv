@@ -1,6 +1,8 @@
+`include "decoder.sv"
 
 module ControlUnit(
   input clk, 
+  input [1:0] flags,
   input [7:0] ctrl_flags, reg_o1, reg_o2, alu_out,
   input [15:0] mem_out,
   output [7:0] mem_addr,
@@ -10,9 +12,10 @@ module ControlUnit(
   output reg_we, mem_we
 );
 
-wire adi, ipc, wpc, spc, mem_re, ldi;
+wire cond, adi, ipc, wpc, spc, mem_re, ldi;
 wire [7:0] imm;
 
+assign cond = ctrl_flags[7];
 assign adi = ctrl_flags[6];
 assign ipc = ctrl_flags[5];
 assign wpc = ctrl_flags[4];
@@ -43,13 +46,20 @@ initial begin
   pc <= 0;
 end
 
+wire [3:0] cond_type;
+
+Decoder flags_dec(flags, cond_type);
+
 always @(posedge clk) begin
   if (fetch_inst) begin
     inst <= mem_out;
     pc <= pc + 1;
   end else begin
-    if (wpc) pc <= alu_out[7:1];
-    else if (ipc) pc <= imm;
+    if ((cond_type[0] & flags[0]) | (cond_type[1] & ~flags[0]) |
+      (cond_type[2] & flags[1]) | (cond_type[2] & ~flags[1]) | ~cond) begin
+      if (wpc) pc <= alu_out[7:1];
+      else if (ipc) pc <= imm[7:1];
+    end
   end
   fetch_inst = ~fetch_inst;
 end

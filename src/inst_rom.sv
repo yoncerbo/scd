@@ -50,6 +50,10 @@ always @(opcode) begin
       alu_flags <= 0;
       ctrl_flags <= 8'b00101000;
     end
+    'h9: begin // b--
+      alu_flags <= 0;
+      ctrl_flags <= 8'b10100000;
+    end
     'hC: begin // adi
       alu_flags <= 0;
       ctrl_flags <= 8'b01000000;
