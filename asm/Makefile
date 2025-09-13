@@ -22,5 +22,5 @@ ${OUT_DIR}/test_%: src/test_%.c src/*
 	mkdir -p ${OUT_DIR}
 	gcc ${CFLAGS} ${TEST_FLAGS} -o $@ $<
 
-test_%: out/test_%
+test_%: ${OUT_DIR}/test_%
 	$<
