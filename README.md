@@ -43,7 +43,7 @@ Register x1 is a used in pseudo instructions for storing the return address.
 | AND | logical and | 4 | R | `r0 = r1 & r2` | Z, C |
 | SRL | shift right logical | 5 | S | `r0 = r1 >> 1` | Z, C |
 | SRA | shift right arithmetic | 6 | S | `r0 = r1 >> 1` | Z, C |
-| JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | |
+| JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
 | JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |
 | ADI | add 4-bit sign extended immediate | C | N | `r0 = r1 + imm` | Z, C |
@@ -53,17 +53,18 @@ Register x1 is a used in pseudo instructions for storing the return address.
 | | | A | | |
 | | | B | | |
 
+#### Notes
+Jumps and branches ignore least significant bit in the address.
+Instruction JLR uses ALU to add r1 and r2, therefore it updates the flags.
+
 ### Branch instructions
 
 | Name | Description | Cond | Effect |
 | --- | --- | --- | ---  
 | BZS | branch if zero flag set | 0 | `if (ZF == 1) { pc = imm }` |
-| BZC | branch if zero flag cleared | 1 | `if (ZF == 0) { pc = imm }` |
-| BCS | branch if carry set | 2 | `if (CF == 1) { pc = imm }` |
+| BCS | branch if carry set | 1 | `if (CF == 1) { pc = imm }` |
+| BZC | branch if zero flag cleared | 2 | `if (ZF == 0) { pc = imm }` |
 | BCC | branch if carry cleared | 3 | `if (CF == 0) { pc = imm }` |
-
-#### Notes
-Jumps and branches ignore least significant bit in the address.
 
 ### Instruction types
 

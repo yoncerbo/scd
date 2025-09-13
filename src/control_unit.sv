@@ -55,8 +55,8 @@ always @(posedge clk) begin
     inst <= mem_out;
     pc <= pc + 1;
   end else begin
-    if ((cond_type[0] & flags[0]) | (cond_type[1] & ~flags[0]) |
-      (cond_type[2] & flags[1]) | (cond_type[2] & ~flags[1]) | ~cond) begin
+    if ((cond_type[0] & flags[0]) | (cond_type[1] & flags[1]) |
+      (cond_type[2] & ~flags[0]) | (cond_type[2] & ~flags[1]) | ~cond) begin
       if (wpc) pc <= alu_out[7:1];
       else if (ipc) pc <= imm[7:1];
     end
