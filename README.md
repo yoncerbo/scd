@@ -46,7 +46,7 @@ Register x1 is a used in pseudo instructions for storing the return address.
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | |
 | JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |
-| ADI | add 4-bit signed immediate | C | N | `r0 = r1 + imm` | Z, C |
+| ADI | add 4-bit sign extended immediate | C | N | `r0 = r1 + imm` | Z, C |
 | STB | store byte | D | R | `memory[r1] = r2` | |
 | LDB | load byte | E | R | `r0 = memory[r1]` | |
 | LDI | load immediate | F | R | `r0 = imm` | |
@@ -91,3 +91,5 @@ Jumps and branches ignore least significant bit in the address.
 | RET | return from subroutine | | `JLR zero, ra, zero` |
 | INC | increment | r0, r1 | `ADI r0, r1, 1` |
 | DEC | decrement | r0, r1 | `ADI r0, r1, -1` |
+| CMP | compare | r0, r1 | `SUB zero, r0, r1` |
+| TST | bit test | r0, r1 | `AND zero, r0, r1` |
