@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   // TODO: reading from stdin
   // TODO: writing to stdout
   const char *in_filename;
-  const char *out_filename = "insts.txt";
+  const char *out_filename = 0;
   AsmOutputFormat output_format = OUTPUT_BINARY;
 
   if (argc <= 2) {

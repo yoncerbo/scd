@@ -16,7 +16,7 @@ build: src/*
 	gcc ${CFLAGS} ${DEV_FLAGS} -o ${OUT_DIR}/dev src/main.c
 
 run: build
-	./out/dev $(in) $(out)
+	./out/dev $(in) -o $(out)
 
 ${OUT_DIR}/test_%: src/test_%.c src/*
 	mkdir -p ${OUT_DIR}

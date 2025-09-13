@@ -16,6 +16,8 @@ typedef enum {
   OP_STB = 0xD,
   OP_LDB = 0xE,
   OP_LDI = 0xF,
+
+  OP_COUNT,
 } Opcode;
 
 typedef enum {
