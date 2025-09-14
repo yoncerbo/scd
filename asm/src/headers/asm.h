@@ -83,8 +83,7 @@ const Inst INSTRUCTIONS[] = {
   { "xor", OP_XOR, FORMAT_REG3 },
   { "nor", OP_NOR, FORMAT_REG3 },
   { "and", OP_AND, FORMAT_REG3 },
-  { "srl", OP_SRL, FORMAT_REG3 },
-  { "sra", OP_SRA, FORMAT_REG3 },
+  { "rot", OP_ROT, FORMAT_REG3 },
   { "jlr", OP_JLR, FORMAT_REG3 },
   { "jli", OP_JLI, FORMAT_IMM },
 
@@ -106,7 +105,6 @@ const Inst INSTRUCTIONS[] = {
   { "nop", OP_NOP, FORMAT_PSEUDO },
   { "mov", OP_MOV, FORMAT_PSEUDO },
   { "not", OP_NOT, FORMAT_PSEUDO },
-  { "sll", OP_SLL, FORMAT_PSEUDO },
   { "neg", OP_NEG, FORMAT_PSEUDO },
   { "jmr", OP_JMR, FORMAT_PSEUDO },
   { "jmi", OP_JMI, FORMAT_PSEUDO },

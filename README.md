@@ -41,7 +41,7 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | XOR | logical xor | 2 | R | `r0 = r1 ^ r2` | Z, C |
 | NOR | logical nor | 3 | R | `r0 = ~(r1 \| r2)` | Z, C |
 | AND | logical and | 4 | R | `r0 = r1 & r2` | Z, C |
-| ROT | rotate right | 5 | R | `r0 = rotate_left(r1, r2)` | Z, C |
+| ROT | rotate bits right | 5 | R | `r0 = rot_right(r1, r2)` | Z, C |
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
 | JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |

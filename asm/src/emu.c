@@ -39,11 +39,10 @@ void Emu_run(Emu *e, uint32_t cycles) {
       case OP_AND:
         e->regs[r0] = Emu_update_flags(e, e->regs[r1] & e->regs[r2]);
         break;
-      case OP_SRL:
-        e->regs[r0] = Emu_update_flags(e, e->regs[r1] >> 1);
-        break;
-      case OP_SRA:
-        e->regs[r0] = Emu_update_flags(e, (int8_t)e->regs[r1] >> 1);
+      case OP_ROT:
+        uint8_t rot = e->regs[r2] & 7;
+        uint8_t rotated_bits = e->regs[r1] & (0xff >> (8 - rot));
+        e->regs[r0] = Emu_update_flags(e, (e->regs[r1] >> rot) | rotated_bits << (8 - rot));
         break;
       case OP_JLR:
         uint8_t prev_pc = e->pc;
