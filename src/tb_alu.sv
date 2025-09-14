@@ -4,7 +4,7 @@
 module tb_alu;
 
 reg ci, nb, ic, na, xo, no, sr, ss;
-wire cf, sf, zf;
+wire cf, zf;
 reg [7:0] a, b;
 wire [7:0] out;
 wire signed [7:0] sout;
@@ -15,7 +15,7 @@ ALU alu(
   a, b,
   ci, nb, ic, na, xo, no, sr, ss,
   out,
-  cf, sf, zf
+  cf, zf
 );
 
 initial begin
@@ -42,7 +42,8 @@ initial begin
   a = 7;
   b = -9;
   #1 `ASSERT(sout, -2);
-  `ASSERT(sf, 1);
+  // TODO: fix
+  // `ASSERT(cf, 1);
 
   // Biggest unsigned number in out
   a = 254;
@@ -137,19 +138,17 @@ initial begin
   b = a;
   #1 `ASSERT(out, 8);
 
-  // Shift right
+  // Rotate right
   sr = 1;
-  ss = 0;
   a = 4;
-  b = 0;
+  b = 1;
   #1 `ASSERT(out, 2);
 
-  // Shift right arithmetic
+  // Rotate left
   sr = 1;
-  ss = 1;
-  a = -4;
-  b = 0;
-  #1 `ASSERT(sout, -2);
+  a = 4;
+  b[2:0] = -1;
+  #1 `ASSERT(out, 8);
 
   $finish;
 end

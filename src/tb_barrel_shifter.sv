@@ -10,7 +10,6 @@ wire [7:0] o;
 BarrelShifter bs(a, b, o);
 
 initial begin
-  // Shift right
   a <= 8'b00010000;
   b <= 3'b100;
 
@@ -30,6 +29,9 @@ initial begin
   b <= 3'b111;
 
   #1 `ASSERT(o, 1);
+  $finish();
+
+  $finish();
 end
 
 endmodule;
