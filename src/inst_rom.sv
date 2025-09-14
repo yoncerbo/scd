@@ -13,7 +13,7 @@ end
 
 always @(opcode) begin
   case (opcode)
-    // ci nb ic na xo no sr ss
+    // ci nb ic na xo no rot -
     'h0: begin // add
       alu_flags <= 8'b00000000;
       ctrl_flags <= 0;
@@ -34,12 +34,8 @@ always @(opcode) begin
       alu_flags <= 8'b01111100; 
       ctrl_flags <= 0;
     end
-    'h5: begin // srl
+    'h5: begin // rot
       alu_flags <= 8'b00000010; 
-      ctrl_flags <= 0;
-    end
-    'h6: begin // sra
-      alu_flags <= 8'b00000011; 
       ctrl_flags <= 0;
     end
     'h7: begin // jlr

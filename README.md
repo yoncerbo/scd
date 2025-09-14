@@ -41,15 +41,15 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | XOR | logical xor | 2 | R | `r0 = r1 ^ r2` | Z, C |
 | NOR | logical nor | 3 | R | `r0 = ~(r1 \| r2)` | Z, C |
 | AND | logical and | 4 | R | `r0 = r1 & r2` | Z, C |
-| SRL | shift right logical | 5 | S | `r0 = r1 >> 1` | Z, C |
-| SRA | shift right arithmetic | 6 | S | `r0 = r1 >> 1` | Z, C |
+| ROT | rotate right | 5 | R | `r0 = rotate_left(r1, r2)` | Z, C |
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
 | JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |
-| ADI | add 4-bit sign extended immediate | C | N | `r0 = r1 + imm` | Z, C |
+| ADI | add 4-bit sign extended immediate | C | S | `r0 = r1 + imm` | Z, C |
 | STB | store byte | D | R | `memory[r1] = r2` | |
 | LDB | load byte | E | R | `r0 = memory[r1]` | |
 | LDI | load immediate | F | R | `r0 = imm` | |
+| | | 6 | | |
 | | | A | | |
 | | | B | | |
 
@@ -71,9 +71,8 @@ Instruction JLR uses ALU to add r1 and r2, therefore it updates the flags.
 | Type | 15:12 | 11:8 | 7:4 | 3:0 |
 | --- | --- | --- | --- | --- |
 | R | op | r0 | r1 | r2 |
-| S | op | r0 | r1 | ignored  |
 | I | op | r0 | imm hi | imm lo |
-| N | op | r0 | r1 | imm |
+| S | op | r0 | r1 | imm |
 | B | op | cond | imm hi | imm lo |
 
 ### Pseudo instructions
@@ -83,7 +82,6 @@ Instruction JLR uses ALU to add r1 and r2, therefore it updates the flags.
 | NOP | no operation | | `ADD zero, zero, zero` |
 | MOV | move (copy) register to another | r0, r1 | `ADD r0, zero, r1` |
 | NOT | logical not | r0, r1 | `NOR r0, r1, r1` |
-| SLL | shift left logical | r0, r1 | `ADD r0, r1, r1` |
 | NEG | negation | r0, r1 | `SUB r0, zero, r1` |
 | JMR | jump register | r0, r1 | `JLR x0, r0, r1` |
 | JMI | jump immediate | imm | `JLI x0, imm` |
