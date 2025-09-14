@@ -44,7 +44,7 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | ROT | rotate bits right | 5 | R | `r0 = rot_right(r1, r2)` | Z, C |
 | ROI | rotate right immediate | 6 | S | `r0 = rot_right(r1, imm)` | Z, C |
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
-| JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
+| JAL | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |
 | ADI | add 4-bit sign extended immediate | C | S | `r0 = r1 + imm` | Z, C |
 | STB | store byte | D | R | `memory[r1 + r2] = r0` | Z, C |
@@ -68,10 +68,10 @@ therefore they update the flags based on the address calculated.
 
 | Name | Description | Cond | Effect |
 | --- | --- | --- | ---  
-| BZS | branch if zero flag set | 0 | `if (ZF == 1) { pc = imm }` |
-| BCS | branch if carry set | 1 | `if (CF == 1) { pc = imm }` |
-| BZC | branch if zero flag cleared | 2 | `if (ZF == 0) { pc = imm }` |
-| BCC | branch if carry cleared | 3 | `if (CF == 0) { pc = imm }` |
+| BZR | branch if zero flag set | 0 | `if (ZF == 1) { pc = imm }` |
+| BNZ | branch if carry set | 1 | `if (CF == 1) { pc = imm }` |
+| BCR | branch if zero flag cleared | 2 | `if (ZF == 0) { pc = imm }` |
+| BNC | branch if carry cleared | 3 | `if (CF == 0) { pc = imm }` |
 
 ### Instruction types
 
@@ -84,22 +84,22 @@ therefore they update the flags based on the address calculated.
 
 ### Pseudo instructions
 
-| Name | Description | Arguments | Instructions |
+| Name | Args | Description | Instructions |
 | --- | --- | --- | --- |
-| NOP | no operation | | `ADD zero, zero, zero` |
-| MOV | move (copy) register to another | r0, r1 | `ADD r0, zero, r1` |
-| NOT | logical not | r0, r1 | `NOR r0, r1, r1` |
-| NEG | negation | r0, r1 | `SUB r0, zero, r1` |
-| JMR | jump register | r0, r1 | `JLR x0, r0, r1` |
-| JMI | jump immediate | imm | `JLI x0, imm` |
-| CSR | call subroutine register | r0, r1 | `JLI ra, r0, r1` |
-| CSI | call subroutine immediate | imm | `JLR ra, imm` |
-| RET | return from subroutine | | `JLR zero, ra, zero` |
-| INC | increment | r0, r1 | `ADI r0, r1, 1` |
-| DEC | decrement | r0, r1 | `ADI r0, r1, -1` |
-| CMP | compare | r0, r1 | `SUB zero, r0, r1` |
-| TST | bit test | r0, r1 | `AND zero, r0, r1` |
-| BEQ | branch if equal | imm | `BZS imm` |
-| BNE | branch if not equal | imm | `BZC imm` |
-| BLT | branch if less than | imm | `BCS imm` |
-| BGE | branch if greater or equal | imm | `BCC imm` |
+| NOP | | no operation | `ADD zero, zero, zero` |
+| MOV | r0, r1 | move (copy) register to another | `ADD r0, zero, r1` |
+| NOT | r0, r1 | logical not | `NOR r0, r1, r1` |
+| NEG | r0, r1 | negation | `SUB r0, zero, r1` |
+| JMP | r0, r1 | jump register | `JLR x0, r0, r1` |
+| JMP | imm | jump immediate | `JLI x0, imm` |
+| CAL | r0, r1 | call subroutine register | `JLI ra, r0, r1` |
+| CAL | imm | call subroutine immediate | `JLR ra, imm` |
+| RET | | return from subroutine | `JLR zero, ra, zero` |
+| INC | r0, r1 | increment | `ADI r0, r1, 1` |
+| DEC | r0, r1 | decrement | `ADI r0, r1, -1` |
+| CMP | r0, r1 | compare | `SUB zero, r0, r1` |
+| TST | r0, r1 | bit test | `AND zero, r0, r1` |
+| BEQ | imm | branch if equal | `BZS imm` |
+| BNE | imm | branch if not equal | `BZC imm` |
+| BLT | imm | branch if less than | `BCS imm` |
+| BGE | imm | branch if greater or equal | `BCC imm` |
