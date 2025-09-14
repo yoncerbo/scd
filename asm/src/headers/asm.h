@@ -84,6 +84,7 @@ const Inst INSTRUCTIONS[] = {
   { "nor", OP_NOR, FORMAT_REG3 },
   { "and", OP_AND, FORMAT_REG3 },
   { "rot", OP_ROT, FORMAT_REG3 },
+  { "roi", OP_ROI, FORMAT_SIMM },
   { "jlr", OP_JLR, FORMAT_REG3 },
   { "jli", OP_JLI, FORMAT_IMM },
 

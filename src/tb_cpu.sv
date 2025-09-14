@@ -25,18 +25,14 @@ initial begin
   
   #1
   mem.memory[0] <= 'hF104;
-  mem.memory[1] <= 'hF201;
-  mem.memory[2] <= 'h5312;
-  mem.memory[3] <= 'hF207;
-  mem.memory[4] <= 'h5312;
+  mem.memory[1] <= 'h6211;
+  mem.memory[2] <= 'h6217;
 
   clk <= 0;
 
   #4 $display(cpu.register_file.registers[1]);
   #4 $display(cpu.register_file.registers[2]);
-  #4 $display(cpu.register_file.registers[3]);
   #4 $display(cpu.register_file.registers[2]);
-  #4 $display(cpu.register_file.registers[3]);
 
   $finish();
 end

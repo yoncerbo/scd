@@ -38,6 +38,10 @@ always @(opcode) begin
       alu_flags <= 8'b00000010; 
       ctrl_flags <= 0;
     end
+    'h6: begin // roi
+      alu_flags <= 8'b00000010; 
+      ctrl_flags <= 8'b01000000;
+    end
     'h7: begin // jlr
       alu_flags <= 0;
       ctrl_flags <= 8'b00011000;

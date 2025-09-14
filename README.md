@@ -42,6 +42,7 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | NOR | logical nor | 3 | R | `r0 = ~(r1 \| r2)` | Z, C |
 | AND | logical and | 4 | R | `r0 = r1 & r2` | Z, C |
 | ROT | rotate bits right | 5 | R | `r0 = rot_right(r1, r2)` | Z, C |
+| ROI | rotate right immediate | 6 | S | `r0 = rot_right(r1, imm)` | Z, C |
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
 | JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |
@@ -49,13 +50,16 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | STB | store byte | D | R | `memory[r1] = r2` | |
 | LDB | load byte | E | R | `r0 = memory[r1]` | |
 | LDI | load immediate | F | R | `r0 = imm` | |
-| | | 6 | | |
 | | | A | | |
 | | | B | | |
 
 #### Notes
+
 Jumps and branches ignore least significant bit in the address.
-Instruction JLR uses ALU to add r1 and r2, therefore it updates the flags.
+
+JLR instruction uses ALU to add r1 and r2, therefore it updates the flags.
+
+ROT instruction uses only 3 lowest bits of r2 and ignores the rest.
 
 ### Branch instructions
 

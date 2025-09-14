@@ -8,6 +8,7 @@ typedef enum {
   OP_NOR = 0x3,
   OP_AND = 0x4,
   OP_ROT = 0x5,
+  OP_ROI = 0x6,
   OP_JLR = 0x7,
   OP_JLI = 0x8,
   OP_B__ = 0x9,

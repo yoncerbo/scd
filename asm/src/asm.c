@@ -121,14 +121,14 @@ bool Asm_parse_inst(Asm *a) {
       uint8_t r1 = Asm_parse_register(a);
       Asm_expected(a, TOK_COMMA);
       tok = Asm_expected(a, TOK_DECIMAL);
-      imm = atoi(&a->source[tok.start]);
+      int32_t simm = atoi(&a->source[tok.start]);
       // TODO: proper range checking
-      if (imm > 16) {
+      if (simm > 16) {
         print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 16");
         exit(1);
       }
       Asm_end_inst(a);
-      Asm_append_inst_reg(a, result.opcode, r0, r1, imm & 15);
+      Asm_append_inst_reg(a, result.opcode, r0, r1, simm & 15);
       break;
     case FORMAT_REG3:
       Asm_parse_inst_reg3(a, &r0, &r1, &r2);
