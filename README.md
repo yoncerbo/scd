@@ -47,8 +47,8 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | JLI | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |
 | ADI | add 4-bit sign extended immediate | C | S | `r0 = r1 + imm` | Z, C |
-| STB | store byte | D | R | `memory[r1] = r2` | |
-| LDB | load byte | E | R | `r0 = memory[r1]` | |
+| STB | store byte | D | R | `memory[r1 + r2] = r0` | Z, C |
+| LDB | load byte | E | R | `r0 = memory[r1 + r2]` | Z, C |
 | LDI | load immediate | F | R | `r0 = imm` | |
 | | | A | | |
 | | | B | | |
@@ -60,6 +60,9 @@ Jumps and branches ignore least significant bit in the address.
 JLR instruction uses ALU to add r1 and r2, therefore it updates the flags.
 
 ROT instruction uses only 3 lowest bits of r2 and ignores the rest.
+
+Instructions LDB and STB use ALU for calculating the addres,
+therefore they update the flags based on the address calculated.
 
 ### Branch instructions
 

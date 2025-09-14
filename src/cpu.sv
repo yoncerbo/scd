@@ -13,7 +13,7 @@ module CPU (
 
 wire reg_we;
 wire [1:0] flags;
-wire [7:0] ctrl_flags, alu_flags, alu_out, reg_in, reg_o1, reg_o2, alu_b;
+wire [7:0] ctrl_flags, alu_flags, alu_out, reg_in, reg_o0, reg_o1, reg_o2, alu_b;
 wire [15:0] inst;
 
 InstRom inst_rom(inst[15:12], alu_flags, ctrl_flags);
@@ -22,7 +22,7 @@ ControlUnit ctrl(
   clk,
   flags,
   ctrl_flags,
-  reg_o1, reg_o2, alu_out,
+  reg_o0, reg_o1, reg_o2, alu_out,
   mem_out, mem_addr, mem_in,
   inst,
   reg_in, alu_b,
@@ -32,7 +32,7 @@ ControlUnit ctrl(
 RegisterFile register_file(
   clk, reg_we,
   inst[11:8], inst[7:4], inst[3:0],
-  reg_in, reg_o1, reg_o2
+  reg_in, reg_o0, reg_o1, reg_o2
 );
 
 ALU alu(

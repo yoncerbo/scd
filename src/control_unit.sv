@@ -3,7 +3,7 @@
 module ControlUnit(
   input clk, 
   input [1:0] flags,
-  input [7:0] ctrl_flags, reg_o1, reg_o2, alu_out,
+  input [7:0] ctrl_flags, reg_o0, reg_o1, reg_o2, alu_out,
   input [15:0] mem_out,
   output [7:0] mem_addr,
   output [15:0] mem_in,
@@ -34,9 +34,9 @@ assign reg_in = spc == 1 ? {pc, 1'b0} : (ldi == 0 ? (mem_re == 0 ? alu_out :
   (mem_addr[0] == 0 ? mem_out[7:0] : mem_out[15:8])) : imm);
 assign reg_we = ~(fetch_inst | mem_we);
 
-assign mem_addr = fetch_inst == 1 ? {pc, 1'b0} : reg_o1;
-assign mem_in[7:0] = mem_addr[0] == 0 ? reg_o2 : mem_out[7:0];
-assign mem_in[15:8] = mem_addr[0] == 1 ? reg_o2 : mem_out[15:8];
+assign mem_addr = fetch_inst == 1 ? {pc, 1'b0} : alu_out;
+assign mem_in[7:0] = mem_addr[0] == 0 ? reg_o0 : mem_out[7:0];
+assign mem_in[15:8] = mem_addr[0] == 1 ? reg_o0 : mem_out[15:8];
 
 assign alu_b = adi == 1 ? {inst[3], inst[3], inst[3], inst[3], inst[3:0]} : reg_o2;
 

@@ -24,15 +24,17 @@ initial begin
   // #1 $readmemh("code.txt", mem.memory, 0, 127);
   
   #1
-  mem.memory[0] <= 'hF104;
-  mem.memory[1] <= 'h6211;
-  mem.memory[2] <= 'h6217;
+  mem.memory[0] <= 'hF10A;
+  mem.memory[1] <= 'hF204;
+  mem.memory[2] <= 'hD212;
+  mem.memory[3] <= 'hE312;
 
   clk <= 0;
 
   #4 $display(cpu.register_file.registers[1]);
   #4 $display(cpu.register_file.registers[2]);
-  #4 $display(cpu.register_file.registers[2]);
+  #4 $display(mem.memory[7]);
+  #4 $display(cpu.register_file.registers[3]);
 
   $finish();
 end
