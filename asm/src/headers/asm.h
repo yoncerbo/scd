@@ -42,11 +42,12 @@ uint16_t tokenize(const char *source, Token token_arr[MAX_TOKENS]);
 
 typedef enum {
   FORMAT_NONE,
+
   FORMAT_REG3,
-  FORMAT_REG2,
   FORMAT_IMM,
   FORMAT_SIMM,
   FORMAT_COND,
+  FORMAT_PSEUDO,
 } InstFormat;
 
 typedef enum {
@@ -54,6 +55,20 @@ typedef enum {
   OP_BCS = 0x11,
   OP_BZC = 0x12,
   OP_BCC = 0x13,
+  OP_NOP,
+  OP_MOV,
+  OP_NOT,
+  OP_SLL,
+  OP_NEG,
+  OP_JMR,
+  OP_JMI,
+  OP_CSI,
+  OP_CSR,
+  OP_RET,
+  OP_INC,
+  OP_DEC,
+  OP_CMP,
+  OP_TST,
 } InstOpcode;
 
 typedef struct {
@@ -78,10 +93,30 @@ const Inst INSTRUCTIONS[] = {
   { "bcs", OP_BCS, FORMAT_COND },
   { "bcc", OP_BCC, FORMAT_COND },
 
+  { "beq", OP_BZS, FORMAT_COND },
+  { "bne", OP_BZC, FORMAT_COND },
+  { "blt", OP_BCS, FORMAT_COND },
+  { "bge", OP_BCC, FORMAT_COND },
+
   { "adi", OP_ADI, FORMAT_SIMM },
   { "ldi", OP_LDI, FORMAT_IMM },
   { "ldb", OP_LDB, FORMAT_REG3 },
   { "stb", OP_STB, FORMAT_REG3 },
+
+  { "nop", OP_NOP, FORMAT_PSEUDO },
+  { "mov", OP_MOV, FORMAT_PSEUDO },
+  { "not", OP_NOT, FORMAT_PSEUDO },
+  { "sll", OP_SLL, FORMAT_PSEUDO },
+  { "neg", OP_NEG, FORMAT_PSEUDO },
+  { "jmr", OP_JMR, FORMAT_PSEUDO },
+  { "jmi", OP_JMI, FORMAT_PSEUDO },
+  { "csi", OP_CSI, FORMAT_PSEUDO },
+  { "csr", OP_CSR, FORMAT_PSEUDO },
+  { "ret", OP_RET, FORMAT_PSEUDO },
+  { "inc", OP_INC, FORMAT_PSEUDO },
+  { "dec", OP_DEC, FORMAT_PSEUDO },
+  { "cmp", OP_CMP, FORMAT_PSEUDO },
+  { "tst", OP_TST, FORMAT_PSEUDO },
 };
 
 const uint32_t INSTRUCTIONS_LEN = sizeof(INSTRUCTIONS) / sizeof(Inst);

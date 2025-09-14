@@ -20,6 +20,5 @@ int main(void) {
   memcpy(e->memory, file.ptr, 256);
 
   Emu_run(e, 32);
-  DEBUGD(e->pc);
   return 0;
 }

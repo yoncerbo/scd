@@ -5,18 +5,18 @@ Simple 8-bit cpu design in verilog using logic gates.
 
 ## Registers
 
-Register file has 16 8-bit registers x0-x16.
+Register file has 16 8-bit registers x0-x15.
 
 Register x0 is a zero register (hard-wired to zero) - always reads 0 and writes are discarded.
 
-Register x1 is a used in pseudo instructions for storing the return address.
+Register x15 is a used in pseudo instructions for storing the return address.
 
 ### Register aliases
 
 | Alias | Register |
 | --- | --- |
 | zero | x0 |
-| ra | x1 |
+| ra | x15 |
 
 ## Flags
 
@@ -86,11 +86,15 @@ Instruction JLR uses ALU to add r1 and r2, therefore it updates the flags.
 | SLL | shift left logical | r0, r1 | `ADD r0, r1, r1` |
 | NEG | negation | r0, r1 | `SUB r0, zero, r1` |
 | JMR | jump register | r0, r1 | `JLR x0, r0, r1` |
-| JMI | jump immediate | imm | `JLR x0, imm` |
+| JMI | jump immediate | imm | `JLI x0, imm` |
+| CSR | call subroutine register | r0, r1 | `JLI ra, r0, r1` |
 | CSI | call subroutine immediate | imm | `JLR ra, imm` |
-| CSR | call subroutine register | r0, r1 | `JLR ra, r0, r1` |
 | RET | return from subroutine | | `JLR zero, ra, zero` |
 | INC | increment | r0, r1 | `ADI r0, r1, 1` |
 | DEC | decrement | r0, r1 | `ADI r0, r1, -1` |
 | CMP | compare | r0, r1 | `SUB zero, r0, r1` |
 | TST | bit test | r0, r1 | `AND zero, r0, r1` |
+| BEQ | branch if equal | imm | `BZS imm` |
+| BNE | branch if not equal | imm | `BZC imm` |
+| BLT | branch if less than | imm | `BCS imm` |
+| BGE | branch if greater or equal | imm | `BCC imm` |

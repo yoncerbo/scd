@@ -45,6 +45,48 @@ void Asm_end_inst(Asm *a) {
   print_error(a->source, tok.start, tok.len, "Expected end of instruction (newline or end of file)");
 }
 
+void Asm_parse_inst_reg2(Asm *a, Reg *out_r0, Reg *out_r1) {
+  *out_r0 = Asm_parse_register(a);
+  Asm_expected(a, TOK_COMMA);
+  *out_r1 = Asm_parse_register(a);
+  Asm_end_inst(a);
+}
+
+void Asm_parse_inst_reg3(Asm *a, Reg *out_r0, Reg *out_r1, Reg *out_r2) {
+  *out_r0 = Asm_parse_register(a);
+  Asm_expected(a, TOK_COMMA);
+  *out_r1 = Asm_parse_register(a);
+  Asm_expected(a, TOK_COMMA);
+  *out_r2 = Asm_parse_register(a);
+  Asm_end_inst(a);
+}
+
+void Asm_parse_inst_imm2(Asm *a, Reg *out_r0, uint8_t *out_imm) {
+    *out_r0 = Asm_parse_register(a);
+    Asm_expected(a, TOK_COMMA);
+    Token tok = Asm_expected(a, TOK_DECIMAL);
+    int32_t imm = atoi(&a->source[tok.start]);
+    // TODO: proper range checking
+    if (imm > 255) {
+      print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 255");
+      exit(1);
+    }
+    Asm_end_inst(a);
+    *out_imm = (uint8_t)imm;
+}
+
+void Asm_parse_inst_imm1(Asm *a, uint8_t *out_imm) {
+    Token tok = Asm_expected(a, TOK_DECIMAL);
+    int32_t imm = atoi(&a->source[tok.start]);
+    // TODO: proper range checking
+    if (imm > 255) {
+      print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 255");
+      exit(1);
+    }
+    Asm_end_inst(a);
+    *out_imm = (uint8_t)imm;
+}
+
 bool Asm_parse_inst(Asm *a) {
   Token tok;
   do { tok = a->tokens[a->tok_pos++]; } while (tok.tag == TOK_NEWLINE);
@@ -66,19 +108,12 @@ bool Asm_parse_inst(Asm *a) {
     exit(1);
   }
 
+  uint8_t r0, r1, r2, imm;
+
   switch (result.format) {
     case FORMAT_IMM:
-      uint8_t reg = Asm_parse_register(a);
-      Asm_expected(a, TOK_COMMA);
-      tok = Asm_expected(a, TOK_DECIMAL);
-      int32_t imm = atoi(&a->source[tok.start]);
-      // TODO: proper range checking
-      if (imm > 255) {
-        print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 255");
-        exit(1);
-      }
-      Asm_end_inst(a);
-      Asm_append_inst_imm(a, result.opcode, reg, imm);
+      Asm_parse_inst_imm2(a, &r0, &imm);
+      Asm_append_inst_imm(a, result.opcode, r0, imm);
       break;
     case FORMAT_SIMM:
       uint8_t r0 = Asm_parse_register(a);
@@ -96,12 +131,7 @@ bool Asm_parse_inst(Asm *a) {
       Asm_append_inst_reg(a, result.opcode, r0, r1, imm & 15);
       break;
     case FORMAT_REG3:
-      r0 = Asm_parse_register(a);
-      Asm_expected(a, TOK_COMMA);
-      r1 = Asm_parse_register(a);
-      Asm_expected(a, TOK_COMMA);
-      uint8_t r2 = Asm_parse_register(a);
-      Asm_end_inst(a);
+      Asm_parse_inst_reg3(a, &r0, &r1, &r2);
       Asm_append_inst_reg(a, result.opcode, r0, r1, r2);
       break;
     case FORMAT_COND:
@@ -114,6 +144,66 @@ bool Asm_parse_inst(Asm *a) {
       }
       Asm_end_inst(a);
       Asm_append_inst_imm(a, OP_B__, result.opcode - 0xf, imm);
+      break;
+    case FORMAT_PSEUDO:
+      switch (result.opcode) {
+        case OP_NOP:
+          Asm_end_inst(a);
+          Asm_append_inst_reg(a, OP_ADD, 0, 0, 0);
+          break;
+        case OP_MOV:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_ADD, r0, 0, r1);
+          break;
+        case OP_NOT:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_NOR, r0, r1, r1);
+          break;
+        case OP_SLL:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_ADD, r0, r1, r1);
+          break;
+        case OP_NEG:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_SUB, r0, 0, r1);
+          break;
+        case OP_JMR:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_JLR, 0, r0, r1);
+          break;
+        case OP_JMI:
+          Asm_parse_inst_imm1(a, &imm);
+          Asm_append_inst_imm(a, OP_JLI, 0, imm);
+          break;
+        case OP_CSR:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_JLR, 15, r0, r1);
+          break;
+        case OP_CSI:
+          Asm_parse_inst_imm1(a, &imm);
+          Asm_append_inst_imm(a, OP_JLI, 15, imm);
+          break;
+        case OP_RET:
+          Asm_end_inst(a);
+          Asm_append_inst_reg(a, OP_JLR, 0, 15, 0);
+          break;
+        case OP_INC:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_ADI, r0, r1, 1);
+          break;
+        case OP_DEC:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_ADI, r0, r1, -1 & 15);
+          break;
+        case OP_CMP:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_SUB, 0, r0, r1);
+          break;
+        case OP_TST:
+          Asm_parse_inst_reg2(a, &r0, &r1);
+          Asm_append_inst_reg(a, OP_AND, 0, r0, r1);
+          break;
+      }
       break;
     default:
       fprintf(stderr, "Unknown instruction: %.*s\n", tok.len, &a->source[tok.start]);
