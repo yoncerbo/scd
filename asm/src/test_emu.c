@@ -19,10 +19,7 @@ int main(void) {
   assert(file.len = 256);
   memcpy(e->memory, file.ptr, 256);
 
-  Emu_run(e, 8);
+  Emu_run(e, 32);
   DEBUGD(e->pc);
-  DEBUGD(e->regs[1]);
-  DEBUGD(e->regs[2]);
-  DEBUGD(e->regs[15]);
   return 0;
 }

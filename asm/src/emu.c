@@ -8,7 +8,7 @@ void Emu_init(Emu *e) {
 }
 
 uint8_t Emu_update_flags(Emu *e, uint16_t value) {
-  e->flags = (value == 0) & ((value > 255) >> 1);
+  e->flags = (value == 0) | ((value > 255) >> 1);
   return value;
 }
 
@@ -55,8 +55,10 @@ void Emu_run(Emu *e, uint32_t cycles) {
         e->pc = imm & ~1;
         break;
       case OP_B__:
-        uint8_t flags = e->flags & (~e->flags << 2);
-        if ((1 << cond) & flags) e->pc = imm;
+        if (cond == COND_ZS && e->flags & ZF) e->pc = imm;
+        else if (cond == COND_ZC && e->flags ^ ZF) e->pc = imm;
+        else if (cond == COND_CS && e->flags & CF) e->pc = imm;
+        else if (cond == COND_CC && e->flags ^ CF) e->pc = imm;
         break;
       case OP_ADI:
         int8_t value = (simm ^ 8) - 8; // sign extend the value - sing bit has value 8

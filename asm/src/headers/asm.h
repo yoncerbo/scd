@@ -49,9 +49,16 @@ typedef enum {
   FORMAT_COND,
 } InstFormat;
 
+typedef enum {
+  OP_BZS = 0x10,
+  OP_BCS = 0x11,
+  OP_BZC = 0x12,
+  OP_BCC = 0x13,
+} InstOpcode;
+
 typedef struct {
   char name[3];
-  uint8_t opcode;
+  InstOpcode opcode;
   InstFormat format;
 } Inst;
 
@@ -65,6 +72,11 @@ const Inst INSTRUCTIONS[] = {
   { "sra", OP_SRA, FORMAT_REG3 },
   { "jlr", OP_JLR, FORMAT_REG3 },
   { "jli", OP_JLI, FORMAT_IMM },
+
+  { "bzs", OP_BZS, FORMAT_COND },
+  { "bzc", OP_BZC, FORMAT_COND },
+  { "bcs", OP_BCS, FORMAT_COND },
+  { "bcc", OP_BCC, FORMAT_COND },
 
   { "adi", OP_ADI, FORMAT_SIMM },
   { "ldi", OP_LDI, FORMAT_IMM },

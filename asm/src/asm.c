@@ -104,6 +104,17 @@ bool Asm_parse_inst(Asm *a) {
       Asm_end_inst(a);
       Asm_append_inst_reg(a, result.opcode, r0, r1, r2);
       break;
+    case FORMAT_COND:
+      tok = Asm_expected(a, TOK_DECIMAL);
+      imm = atoi(&a->source[tok.start]);
+      // TODO: proper range checking
+      if (imm > 255) {
+        print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 255");
+        exit(1);
+      }
+      Asm_end_inst(a);
+      Asm_append_inst_imm(a, OP_B__, result.opcode - 0xf, imm);
+      break;
     default:
       fprintf(stderr, "Unknown instruction: %.*s\n", tok.len, &a->source[tok.start]);
       exit(1);
@@ -113,10 +124,10 @@ bool Asm_parse_inst(Asm *a) {
 }
 
 void Asm_assemble(const char *source, Asm *a) {
+  *a = (Asm){
+    .source = source,
+  };
   tokenize(source, a->tokens);
-  a->source = source;
-  a->tok_pos = 0;
-  a->mem_pos = 0;
 
   while (Asm_parse_inst(a));
 }
