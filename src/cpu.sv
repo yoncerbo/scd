@@ -13,8 +13,8 @@ module CPU (
 
 wire reg_we;
 wire [1:0] flags;
-wire [7:0] ctrl_flags, alu_flags, alu_out, reg_in, reg_o0, reg_o1, reg_o2, alu_b;
-wire [15:0] inst;
+wire [7:0] ctrl_flags, alu_flags;
+wire [15:0] inst, alu_out, reg_in, reg_o0, reg_o1, reg_o2, alu_b;
 
 InstRom inst_rom(inst[15:12], alu_flags, ctrl_flags);
 
