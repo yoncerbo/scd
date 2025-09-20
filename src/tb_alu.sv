@@ -5,9 +5,9 @@ module tb_alu;
 
 reg ci, nb, ic, na, xo, no, sr, ss;
 wire cf, zf;
-reg [7:0] a, b;
-wire [7:0] out;
-wire signed [7:0] sout;
+reg [15:0] a, b;
+wire [15:0] out;
+wire signed [15:0] sout;
 
 assign sout = out;
 
@@ -51,7 +51,7 @@ initial begin
   #1 `ASSERT(out, 255);
 
   // Overflow
-  a = 254;
+  a = 'hfffe;
   b = 2;
   #1 `ASSERT(out, 0);
   `ASSERT(cf, 1);
@@ -94,7 +94,7 @@ initial begin
   ic = 1;
   a = 16;
   b = 0;
-  #1 `ASSERT(out, 239);
+  #1 `ASSERT(out, ~a);
 
   // Negate
   ci = 1;
@@ -147,7 +147,7 @@ initial begin
   // Rotate left
   sr = 1;
   a = 4;
-  b[2:0] = -1;
+  b[3:0] = -1;
   #1 `ASSERT(out, 8);
 
   $finish;
