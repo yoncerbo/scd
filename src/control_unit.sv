@@ -1,7 +1,7 @@
 `include "decoder.sv"
 
-module ControlUnit(
-  input clk, 
+module ControlUnit (
+  input clk,
   input [1:0] flags,
   input [7:0] ctrl_flags, reg_o0, reg_o1, reg_o2, alu_out,
   input [15:0] mem_out,
