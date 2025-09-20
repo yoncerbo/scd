@@ -1,17 +1,20 @@
 
-Simple 8-bit cpu design in verilog using logic gates.
+Simple cpu design with assembler and emulator.
+
+# Features
+- Simple machine code format.
+- Only few instructions.
+- Word size is 8-bits - addresses, registers, program counter.
+- Fifteen general purpose registers x1-x15.
+- Zero register x0.
+- 256 bytes of unified (instructions and data) memory.
+- Load-store architecture - separate instructions for memory manipulation.
+- Von-Neuman architecture - one memory for instructions and data.
+- Pseudo instructions to better express intent and simplify writing assembly code.
 
 # Architecture
 
-## Registers
-
-Register file has 16 8-bit registers x0-x15.
-
-Register x0 is a zero register (hard-wired to zero) - always reads 0 and writes are discarded.
-
-Register x15 is a used in pseudo instructions for storing the return address.
-
-### Register aliases
+## Register aliases
 
 | Alias | Register |
 | --- | --- |
@@ -24,11 +27,6 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | --- | --- |
 | Z | zero flag |
 | C | carry flag |
-
-
-## Memory
-
-127 16-bit cells - 255 bytes
 
 ## Instructions
 
@@ -45,7 +43,7 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | ROI | rotate right immediate | 6 | S | `r0 = rot_right(r1, imm)` | Z, C |
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
 | JAL | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
-| B-- | branch instructions | 9 | B | | |
+| B-- | branch instructions | 9 | B | `if (cond) { pc = imm }` | |
 | ADI | add 4-bit sign extended immediate | C | S | `r0 = r1 + imm` | Z, C |
 | STB | store byte | D | S | `memory[r1 + imm] = r0` | Z, C |
 | LDB | load byte | E | S | `r0 = memory[r1 + imm]` | Z, C |
@@ -64,15 +62,6 @@ ROT instruction uses only 3 lowest bits of r2 and ignores the rest.
 Instructions LDB and STB use ALU for calculating the addres,
 therefore they update the flags based on the address calculated.
 
-### Branch instructions
-
-| Name | Description | Cond | Effect |
-| --- | --- | --- | ---  
-| BZR | branch if zero flag set | 0 | `if (ZF == 1) { pc = imm }` |
-| BNZ | branch if carry set | 1 | `if (CF == 1) { pc = imm }` |
-| BCR | branch if zero flag cleared | 2 | `if (ZF == 0) { pc = imm }` |
-| BNC | branch if carry cleared | 3 | `if (CF == 0) { pc = imm }` |
-
 ### Instruction types
 
 | Type | 15:12 | 11:8 | 7:4 | 3:0 |
@@ -81,6 +70,15 @@ therefore they update the flags based on the address calculated.
 | I | op | r0 | imm hi | imm lo |
 | S | op | r0 | r1 | imm |
 | B | op | cond | imm hi | imm lo |
+
+### Branch instructions
+
+| Name | Description | Cond |
+| --- | --- | --- |
+| BZR | branch if zero flag set | 0 |
+| BNZ | branch if carry set | 1 |
+| BCR | branch if zero flag cleared | 2 |
+| BNC | branch if carry cleared | 3 |
 
 ### Pseudo instructions
 
