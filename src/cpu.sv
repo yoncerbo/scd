@@ -7,7 +7,7 @@ module CPU (
   input clk,
   input [15:0] mem_out,
   output mem_we,
-  output [7:0] mem_addr,
+  output [15:0] mem_addr,
   output [15:0] mem_in
 );
 

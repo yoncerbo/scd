@@ -60,11 +60,11 @@ always @(opcode) begin
     end
     'hD: begin // stb
       alu_flags <= 0;
-      ctrl_flags <= 8'b01000100;
+      ctrl_flags <= 8'b00000100;
     end
     'hE: begin // ldb
       alu_flags <= 0;
-      ctrl_flags <= 8'b01000010;
+      ctrl_flags <= 8'b00000010;
     end
     'hF: begin // ldi
       alu_flags <= 0;
