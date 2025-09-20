@@ -25,16 +25,16 @@ initial begin
   
   #1
   mem.memory[0] <= 'hF10A;
-  mem.memory[1] <= 'hF204;
-  mem.memory[2] <= 'hD212;
-  mem.memory[3] <= 'hE312;
+  mem.memory[1] <= 'hF20A;
+  mem.memory[3] <= 'hD122;
 
   clk <= 0;
 
   #4 $display(cpu.register_file.registers[1]);
   #4 $display(cpu.register_file.registers[2]);
-  #4 $display(mem.memory[7]);
-  #4 $display(cpu.register_file.registers[3]);
+  #4 $display(mem.memory[6]);
+  // FIXME: why is it getting updated only after 2 cycles?
+  #4 $display(mem.memory[6]);
 
   $finish();
 end

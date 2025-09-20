@@ -47,9 +47,9 @@ Register x15 is a used in pseudo instructions for storing the return address.
 | JAL | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | | |
 | ADI | add 4-bit sign extended immediate | C | S | `r0 = r1 + imm` | Z, C |
-| STB | store byte | D | R | `memory[r1 + r2] = r0` | Z, C |
-| LDB | load byte | E | R | `r0 = memory[r1 + r2]` | Z, C |
-| LDI | load immediate | F | R | `r0 = imm` | |
+| STB | store byte | D | S | `memory[r1 + imm] = r0` | Z, C |
+| LDB | load byte | E | S | `r0 = memory[r1 + imm]` | Z, C |
+| LDI | load immediate | F | I | `r0 = imm` | |
 | | | A | | |
 | | | B | | |
 

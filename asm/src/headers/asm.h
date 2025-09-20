@@ -100,8 +100,8 @@ const Inst INSTRUCTIONS[] = {
 
   { "adi", OP_ADI, FORMAT_SIMM },
   { "ldi", OP_LDI, FORMAT_IMM },
-  { "ldb", OP_LDB, FORMAT_REG3 },
-  { "stb", OP_STB, FORMAT_REG3 },
+  { "ldb", OP_LDB, FORMAT_SIMM },
+  { "stb", OP_STB, FORMAT_SIMM },
 
   { "nop", OP_NOP, FORMAT_PSEUDO },
   { "mov", OP_MOV, FORMAT_PSEUDO },

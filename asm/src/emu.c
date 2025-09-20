@@ -69,7 +69,7 @@ void Emu_run(Emu *e, uint32_t cycles) {
         e->regs[r0] = Emu_update_flags(e, e->regs[r1] + value);
         break;
       case OP_STB:
-        uint8_t addr = Emu_update_flags(e, e->regs[r1] + e->regs[r2]);
+        uint8_t addr = Emu_update_flags(e, e->regs[r1] + simm);
         switch (addr) {
           case 254:
             printf("%d\n", (int8_t)e->regs[r0]);
@@ -82,7 +82,7 @@ void Emu_run(Emu *e, uint32_t cycles) {
         }
         break;
       case OP_LDB:
-        addr = Emu_update_flags(e, e->regs[r1] + e->regs[r2]);
+        addr = Emu_update_flags(e, e->regs[r1] + simm);
         e->regs[r0] = e->memory[addr];
         break;
       case OP_LDI:
