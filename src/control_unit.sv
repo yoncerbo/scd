@@ -8,7 +8,8 @@ module ControlUnit (
   output [15:0] mem_addr, mem_in,
   output reg [15:0] inst,
   output [15:0] reg_in, alu_b,
-  output reg_we, mem_we
+  output reg_we, mem_we, mem_byte_half,
+  input imm3
 );
 
 wire cond, adi, ipc, wpc, spc, mem_re, ldi;
@@ -32,15 +33,15 @@ wire [15:0] imm16 = { imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], im
 wire [15:0] simm16 = { imm[3], imm[3], imm[3], imm[3], imm[3], imm[3], imm[3],
   imm[3], imm[3], imm[3], imm[3], imm[3], imm[3:0] };
 
-assign reg_in = spc == 1 ? {pc, 1'b0} : (ldi == 0 ? (mem_re == 0 ? alu_out :
-  (mem_addr[0] == 0 ? mem_out[7:0] : mem_out[15:8])) : imm16);
+assign reg_in = spc == 1 ? {pc, 1'b0} : (ldi == 0 ? (mem_re == 0 ? alu_out : mem_out) : imm16);
 assign reg_we = ~(fetch_inst | mem_we);
 
-assign mem_addr = fetch_inst == 1 ? {pc, 1'b0} : {reg_o1, reg_o2};
-assign mem_in[7:0] = mem_addr[0] == 0 ? reg_o0 : mem_out[7:0];
-assign mem_in[15:8] = mem_addr[0] == 1 ? reg_o0 : mem_out[15:8];
+assign mem_addr = fetch_inst == 1 ? {pc, 1'b0} : alu_out;
+assign mem_in = reg_o0;
 
-assign alu_b = adi == 1 ? simm16 : reg_o2;
+assign mem_byte_half = fetch_inst == 1 ? 1'b1 : inst[3];
+
+assign alu_b = adi == 1 ? simm16 : (imm3 == 1 ? {13'b0, inst[2:0]} : reg_o2);
 
 initial begin
   fetch_inst <= 1;

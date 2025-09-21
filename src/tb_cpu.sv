@@ -8,7 +8,7 @@ reg clk;
 wire mem_we;
 wire [15:0] mem_addr, mem_in, mem_out;
 
-CPU cpu(clk, mem_out, mem_we, mem_addr, mem_in);
+CPU cpu(clk, mem_out, mem_we, mem_addr[15:1], mem_in);
 
 Memory mem(clk, mem_we, mem_addr[7:1], mem_in, mem_out);
 
@@ -25,7 +25,7 @@ initial begin
   #1
   mem.memory[0] <= 'hF10A;
   mem.memory[1] <= 'hF20A;
-  mem.memory[2] <= 'hD102;
+  mem.memory[2] <= 'hD120;
 
   clk <= 0;
 

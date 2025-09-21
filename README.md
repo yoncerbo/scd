@@ -45,8 +45,8 @@ Simple cpu design with assembler and emulator.
 | JAL | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | `if (cond) { pc = imm }` | |
 | ADI | add 4-bit sign extended immediate | C | S | `r0 = r1 + imm` | Z, C |
-| STB | store byte | D | S | `memory[r1 + imm] = r0` | Z, C |
-| LDB | load byte | E | S | `r0 = memory[r1 + imm]` | Z, C |
+| MR- | memory read | D | M | `memory[r1 + imm] = r0` | Z, C |
+| MW- | memory write | E | M | `r0 = memory[r1 + imm]` | Z, C |
 | LDI | load immediate | F | I | `r0 = imm` | |
 | | | A | | |
 | | | B | | |
@@ -62,6 +62,9 @@ ROT instruction uses only 3 lowest bits of r2 and ignores the rest.
 Instructions LDB and STB use ALU for calculating the addres,
 therefore they update the flags based on the address calculated.
 
+In M-type instrution can either address byte or half (16 bits).
+The immediate in M-type instrutions isn't sign extended.
+
 ### Instruction types
 
 | Type | 15:12 | 11:8 | 7:4 | 3:0 |
@@ -70,6 +73,7 @@ therefore they update the flags based on the address calculated.
 | I | op | r0 | imm hi | imm lo |
 | S | op | r0 | r1 | imm |
 | B | op | cond | imm hi | imm lo |
+| M | op | r0 | r1 | b/h, imm 3-bit |
 
 ### Branch instructions
 

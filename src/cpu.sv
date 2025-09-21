@@ -2,31 +2,36 @@
 `include "inst_rom.sv"
 `include "register_file.sv"
 `include "control_unit.sv"
+`include "memory_controller.sv"
 
 module CPU (
   input clk,
   input [15:0] mem_out,
   output mem_we,
-  output [15:0] mem_addr,
+  output [14:0] mem_addr,
   output [15:0] mem_in
 );
 
-wire reg_we;
+wire reg_we, imm3;
 wire [1:0] flags;
 wire [7:0] ctrl_flags, alu_flags;
 wire [15:0] inst, alu_out, reg_in, reg_o0, reg_o1, reg_o2, alu_b;
+wire [15:0] mc_addr, mc_in, mc_out;
 
-InstRom inst_rom(inst[15:12], alu_flags, ctrl_flags);
+InstRom inst_rom(inst[15:12], alu_flags, ctrl_flags, imm3);
+
+MemoryController mc(clk, mem_we, mem_byte_half, mc_addr, mc_in, mc_out, mem_out, mem_in, mem_addr);
 
 ControlUnit ctrl(
   clk,
   flags,
   ctrl_flags,
   reg_o0, reg_o1, reg_o2, alu_out,
-  mem_out, mem_addr, mem_in,
+  mc_out, mc_addr, mc_in,
   inst,
   reg_in, alu_b,
-  reg_we, mem_we
+  reg_we, mem_we, mem_byte_half,
+  imm3
 );
 
 RegisterFile register_file(
