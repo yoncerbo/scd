@@ -25,15 +25,23 @@ initial begin
   cpu.ctrl.sc_regs[0] <= 255;
   
   #1
-  mem.memory[0] <= 'hF201;
-  mem.memory[1] <= 'hB100;
-  mem.memory[2] <= 'hB120;
+  mem.memory[0] <= 0;
+  mem.memory[1] <= 0;
+  mem.memory[2] <= 'h81ff;
 
   clk <= 0;
 
-  #4 $display(cpu.register_file.registers[2]);
-  #4 $display("r1=", cpu.register_file.registers[1]);
-  #4 $display("r1=", cpu.register_file.registers[1]);
+  #4
+  #4
+  #4
+  $display("reg=%0d", cpu.register_file.registers[1]);
+  $display("pc=%0d", {cpu.ctrl.pc, 1'b0});
+  #4
+  $display("reg=%0d", cpu.register_file.registers[1]);
+  $display("pc=%0d", {cpu.ctrl.pc, 1'b0});
+  #4
+  $display("reg=%0d", cpu.register_file.registers[1]);
+  $display("pc=%0d", {cpu.ctrl.pc, 1'b0});
 
   $finish();
 end

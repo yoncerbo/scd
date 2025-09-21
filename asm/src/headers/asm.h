@@ -47,6 +47,7 @@ typedef enum {
   FORMAT_IMM,
   FORMAT_SIMM,
   FORMAT_COND,
+  FORMAT_MEM,
   FORMAT_PSEUDO,
 } InstFormat;
 
@@ -69,6 +70,10 @@ typedef enum {
   OP_DEC,
   OP_CMP,
   OP_TST,
+  OP_MSB,
+  OP_MSH,
+  OP_MLB,
+  OP_MLH,
 } InstOpcode;
 
 typedef struct {
@@ -86,7 +91,7 @@ const Inst INSTRUCTIONS[] = {
   { "rot", OP_ROT, FORMAT_REG3 },
   { "roi", OP_ROI, FORMAT_SIMM },
   { "jlr", OP_JLR, FORMAT_REG3 },
-  { "jli", OP_JLI, FORMAT_IMM },
+  { "jal", OP_JAL, FORMAT_IMM },
 
   { "bzs", OP_BZS, FORMAT_COND },
   { "bzc", OP_BZC, FORMAT_COND },
@@ -100,8 +105,10 @@ const Inst INSTRUCTIONS[] = {
 
   { "adi", OP_ADI, FORMAT_SIMM },
   { "ldi", OP_LDI, FORMAT_IMM },
-  { "ldb", OP_LDB, FORMAT_SIMM },
-  { "stb", OP_STB, FORMAT_SIMM },
+  { "mlb", OP_MLB, FORMAT_MEM },
+  { "mlh", OP_MLH, FORMAT_MEM },
+  { "msb", OP_MSB, FORMAT_MEM },
+  { "msh", OP_MSH, FORMAT_MEM },
 
   { "nop", OP_NOP, FORMAT_PSEUDO },
   { "mov", OP_MOV, FORMAT_PSEUDO },

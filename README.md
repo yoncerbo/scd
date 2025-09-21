@@ -1,5 +1,5 @@
 
-Simple cpu design with assembler and emulator.
+Simple cpu design in veriolog with assembler and emulator.
 
 # Features
 - Simple machine code format.
@@ -42,8 +42,8 @@ Simple cpu design with assembler and emulator.
 | ROT | rotate bits right | 5 | R | `r0 = rot_right(r1, r2)` | Z, C |
 | ROI | rotate right immediate | 6 | S | `r0 = rot_right(r1, sing_extend(imm))` | Z, C |
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
-| JAL | jump and link | 8 | I | `r0 = pc + 2; pc = imm` | |
-| B-- | branch instructions | 9 | B | `if (cond) { pc = imm }` | |
+| JAL | jump and link | 8 | I | `r0 = pc + 2; pc += sign_extend(imm << 1)` | |
+| B-- | branch instructions | 9 | B | `if (cond) { pc += sign_extend(imm << 1) }` | |
 | LUI | load upper immediate | A | I | `r0[15:8] = imm` | |
 | SCR | status/control registers | B | S | `scr[imm] ^= r1; r0 = scr[imm]` | |
 | ADI | add immediate | C | S | `r0 = r1 + sign_extend(imm)` | Z, C |
@@ -105,3 +105,4 @@ The immediate in M-type instrutions isn't sign extended.
 | BNE | imm | branch if not equal | `BZC imm` |
 | BLT | imm | branch if less than | `BCS imm` |
 | BGE | imm | branch if greater or equal | `BCC imm` |
+| LPC | r0 | load program counter | `JAL r0, 0` |

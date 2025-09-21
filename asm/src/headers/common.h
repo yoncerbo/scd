@@ -9,6 +9,10 @@ typedef struct {
   uint32_t len;
 } Str;
 
+#define KB(n) ((n) * 1024)
+#define MB(n) ((n) * 1024 * 1024)
+#define GB(n) ((n) * 1024 * 1024 * 1024)
+
 #define STR_NONE ((Str){0})
 #define STRINGIFY_INNER(x) #x
 #define STRINGIFY(x) STRINGIFY_INNER(x) 

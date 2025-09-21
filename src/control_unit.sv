@@ -7,7 +7,7 @@ module ControlUnit (
   input [15:0] reg_o0, reg_o1, reg_o2, alu_out, mem_out,
   output [15:0] mem_addr, mem_in,
   output reg [15:0] inst,
-  output [15:0] reg_in, alu_b,
+  output [15:0] reg_in, alu_b, alu_a,
   output reg_we, mem_we, mem_byte_half
 );
 
@@ -46,7 +46,9 @@ assign mem_in = reg_o0;
 assign mem_byte_half = fetch_inst == 1 ? 1'b1 : inst[3];
 
 assign alu_b = adi == 1 ? simm16 : (imm3 == 1 ? {13'b0, inst[2:0]} : (
-  scr == 1 ? sc_regs[inst[3:0]] : reg_o2));
+  scr == 1 ? sc_regs[inst[3:0]] : (ipc == 1 ? {pc, 1'b0} : reg_o2)));
+assign alu_a = ipc == 1 ? {
+  imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm, 1'b0} : reg_o1;
 
 initial begin
   fetch_inst <= 1;
@@ -66,7 +68,6 @@ always @(posedge clk) begin
     if ((cond_type[0] & flags[0]) | (cond_type[1] & flags[1]) |
       (cond_type[2] & ~flags[0]) | (cond_type[2] & ~flags[1]) | ~cond) begin
       if (wpc) pc <= alu_out[7:1];
-      else if (ipc) pc <= imm[7:1];
     end
     if (scr) begin
       sc_regs[inst[3:0]] <= alu_out;

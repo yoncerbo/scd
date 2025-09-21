@@ -145,6 +145,21 @@ bool Asm_parse_inst(Asm *a) {
       Asm_end_inst(a);
       Asm_append_inst_imm(a, OP_B__, result.opcode - 0xf, imm);
       break;
+    case FORMAT_MEM:
+      r0 = Asm_parse_register(a);
+      Asm_expected(a, TOK_COMMA);
+      r1 = Asm_parse_register(a);
+      Asm_expected(a, TOK_COMMA);
+      tok = Asm_expected(a, TOK_DECIMAL);
+      simm = atoi(&a->source[tok.start]);
+      // TODO: proper range checking
+      if (simm > 8) {
+        print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 8");
+        exit(1);
+      }
+      Asm_end_inst(a);
+      Asm_append_inst_reg(a, result.opcode, r0, r1, simm & 7);
+      break;
     case FORMAT_PSEUDO:
       switch (result.opcode) {
         case OP_NOP:

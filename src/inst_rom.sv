@@ -48,11 +48,11 @@ always @(opcode) begin
     end
     'h8: begin // jli
       alu_flags <= 0;
-      ctrl_flags <= 'b00101000;
+      ctrl_flags <= 'b00111000;
     end
     'h9: begin // b--
       alu_flags <= 0;
-      ctrl_flags <= 'b10100000;
+      ctrl_flags <= 'b10110000;
     end
     'hA: begin // lui
       alu_flags <= 0;
