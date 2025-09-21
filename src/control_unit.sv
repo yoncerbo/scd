@@ -32,9 +32,8 @@ reg fetch_inst;
 reg [14:0] pc;
 
 assign imm = inst[7:0];
-wire [15:0] imm16 = { imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm };
-wire [15:0] simm16 = { imm[3], imm[3], imm[3], imm[3], imm[3], imm[3], imm[3],
-  imm[3], imm[3], imm[3], imm[3], imm[3], imm[3:0] };
+wire [15:0] imm16 = { {8{imm[7]}}, imm };
+wire [15:0] simm16 = { {12{imm[3]}}, imm[3:0] };
 
 assign reg_in = spc == 1 ? {pc, 1'b0} : (ldi == 1 ? imm16 : (
   mem_re == 1 ? mem_out : (lui == 1 ? {imm, reg_o0[7:0]} : alu_out)));
@@ -47,8 +46,7 @@ assign mem_byte_half = fetch_inst == 1 ? 1'b1 : inst[3];
 
 assign alu_b = adi == 1 ? simm16 : (imm3 == 1 ? {13'b0, inst[2:0]} : (
   scr == 1 ? sc_regs[inst[3:0]] : (ipc == 1 ? {pc, 1'b0} : reg_o2)));
-assign alu_a = ipc == 1 ? {
-  imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm, 1'b0} : reg_o1;
+assign alu_a = ipc == 1 ? { {7{imm[7]}}, imm, 1'b0 } : reg_o1;
 
 initial begin
   fetch_inst <= 1;
