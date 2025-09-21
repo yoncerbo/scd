@@ -7,8 +7,8 @@ void Emu_init(Emu *e) {
   *e = (Emu){0};
 }
 
-uint8_t Emu_update_flags(Emu *e, uint16_t value) {
-  e->flags = (value == 0) | ((value > 255) >> 1);
+uint16_t Emu_update_flags(Emu *e, uint32_t value) {
+  e->flags = (value == 0) | ((value > UINT16_MAX) >> 1);
   return value;
 }
 
@@ -40,53 +40,72 @@ void Emu_run(Emu *e, uint32_t cycles) {
         e->regs[r0] = Emu_update_flags(e, e->regs[r1] & e->regs[r2]);
         break;
       case OP_ROT:
-        uint8_t rot = e->regs[r2] & 7;
-        uint8_t rotated_bits = e->regs[r1] & (0xff >> (8 - rot));
-        e->regs[r0] = Emu_update_flags(e, (e->regs[r1] >> rot) | rotated_bits << (8 - rot));
+        uint8_t rot = e->regs[r2] & 15;
+        uint8_t rotated_bits = e->regs[r1] & (0xffff >> (16 - rot));
+        e->regs[r0] = Emu_update_flags(e, (e->regs[r1] >> rot) | rotated_bits << (16 - rot));
         break;
       case OP_ROI:
-        rot = r2 & 7;
-        rotated_bits = e->regs[r1] & (0xff >> (8 - rot));
-        e->regs[r0] = Emu_update_flags(e, (e->regs[r1] >> rot) | rotated_bits << (8 - rot));
+        rot = r2 & 15;
+        rotated_bits = e->regs[r1] & (0xffff >> (16 - rot));
+        e->regs[r0] = Emu_update_flags(e, (e->regs[r1] >> rot) | rotated_bits << (16 - rot));
         break;
       case OP_JLR:
         uint8_t prev_pc = e->pc;
         e->pc = Emu_update_flags(e, e->regs[r1] + e->regs[r2]) & ~1;
         e->regs[r0] = prev_pc;
         break;
-      case OP_JLI:
-        e->regs[r0] = e->pc;
-        e->pc = imm & ~1;
+      case OP_JAL:
+        prev_pc = e->pc;
+        e->pc = Emu_update_flags(e, e->pc + (int16_t)imm << 1) & ~1;
+        e->regs[r0] = prev_pc;
         break;
       case OP_B__:
-        if (cond == COND_ZS && e->flags & ZF) e->pc = imm;
-        else if (cond == COND_ZC && e->flags ^ ZF) e->pc = imm;
-        else if (cond == COND_CS && e->flags & CF) e->pc = imm;
-        else if (cond == COND_CC && e->flags ^ CF) e->pc = imm;
+        uint8_t offset = 0;
+        if (cond == COND_ZS && e->flags & ZF) offset = imm;
+        else if (cond == COND_ZC && e->flags ^ ZF) offset = imm;
+        else if (cond == COND_CS && e->flags & CF) offset = imm;
+        else if (cond == COND_CC && e->flags ^ CF) offset = imm;
+        e->pc = Emu_update_flags(e, e->pc + (int16_t)offset << 1) & ~1;
         break;
       case OP_ADI:
-        int8_t value = (simm ^ 8) - 8; // sign extend the value - sing bit has value 8
+        int16_t value = (simm ^ 8) - 8; // sign extend the value - sing bit has value 8
         e->regs[r0] = Emu_update_flags(e, e->regs[r1] + value);
         break;
-      case OP_STB:
-        uint8_t addr = Emu_update_flags(e, e->regs[r1] + simm);
+      case OP_ST_:
+        uint8_t byte_or_half = (inst >> 3) & 1;
+        uint16_t addr = Emu_update_flags(e, e->regs[r1] + ((simm & 7) << byte_or_half));
         switch (addr) {
-          case 254:
-            printf("%d\n", (int8_t)e->regs[r0]);
+          case 0xff00:
+            printf("%d\n", (uint16_t)e->regs[r0]);
             break;
-          case 255:
-            printf("%d\n", e->regs[r0]);
+          case 0xff02:
+            printf("%d\n", (int16_t)e->regs[r0]);
             break;
           default:
-            e->memory[addr] = e->regs[r0];
+            if (byte_or_half) {
+              e->memory[addr & ~1] = (uint8_t)(e->regs[r0] >> 8);
+              e->memory[addr | 1] = (uint8_t)e->regs[r0];
+            }
+            else e->memory[addr] = (uint8_t)e->regs[r0];
         }
         break;
-      case OP_LDB:
-        addr = Emu_update_flags(e, e->regs[r1] + simm);
-        e->regs[r0] = e->memory[addr];
+      case OP_LD_:
+        byte_or_half = (inst >> 3) & 1;
+        addr = Emu_update_flags(e, e->regs[r1] + ((simm & 7) << byte_or_half));
+        e->regs[r0] = byte_or_half ? (
+            ((uint16_t)e->memory[addr & ~1] << 8) | e->memory[addr | 1]
+        ) : e->memory[addr];
         break;
       case OP_LDI:
-        e->regs[r0] = imm;
+        e->regs[r0] = (int16_t)((imm ^ 128) - 128);
+        break;
+      case OP_LUI:
+        e->regs[r0] = (e->regs[r0] & 255) | ((uint16_t)imm << 8);
+        break;
+      case OP_SCR:
+        uint16_t new_val = e->sc_regs[simm & 15] ^ e->regs[r1];
+        e->regs[r0] = new_val;
+        e->sc_regs[simm & 15] = new_val;
         break;
     }
     e->regs[0] = 0;

@@ -47,7 +47,8 @@ typedef enum {
   FORMAT_IMM,
   FORMAT_SIMM,
   FORMAT_COND,
-  FORMAT_MEM,
+  FORMAT_MEM_BYTE,
+  FORMAT_MEM_HALF,
   FORMAT_PSEUDO,
 } InstFormat;
 
@@ -70,10 +71,6 @@ typedef enum {
   OP_DEC,
   OP_CMP,
   OP_TST,
-  OP_MSB,
-  OP_MSH,
-  OP_MLB,
-  OP_MLH,
 } InstOpcode;
 
 typedef struct {
@@ -105,10 +102,12 @@ const Inst INSTRUCTIONS[] = {
 
   { "adi", OP_ADI, FORMAT_SIMM },
   { "ldi", OP_LDI, FORMAT_IMM },
-  { "mlb", OP_MLB, FORMAT_MEM },
-  { "mlh", OP_MLH, FORMAT_MEM },
-  { "msb", OP_MSB, FORMAT_MEM },
-  { "msh", OP_MSH, FORMAT_MEM },
+  { "ldb", OP_LD_, FORMAT_MEM_BYTE },
+  { "ldh", OP_LD_, FORMAT_MEM_HALF },
+  { "stb", OP_ST_, FORMAT_MEM_BYTE },
+  { "sth", OP_ST_, FORMAT_MEM_HALF },
+  { "lui", OP_LUI, FORMAT_IMM },
+  { "scr", OP_SCR, FORMAT_SIMM },
 
   { "nop", OP_NOP, FORMAT_PSEUDO },
   { "mov", OP_MOV, FORMAT_PSEUDO },

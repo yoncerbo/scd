@@ -44,7 +44,8 @@ assign mem_in = reg_o0;
 
 assign mem_byte_half = fetch_inst == 1 ? 1'b1 : inst[3];
 
-assign alu_b = adi == 1 ? simm16 : (imm3 == 1 ? {13'b0, inst[2:0]} : (
+assign alu_b = adi == 1 ? simm16 : (imm3 == 1 ? (
+  mem_byte_half == 1 ? {13'b0, inst[2:0]} : {12'b0, inst[2:0], 1'b0}) : (
   scr == 1 ? sc_regs[inst[3:0]] : (ipc == 1 ? {pc, 1'b0} : reg_o2)));
 assign alu_a = ipc == 1 ? { {7{imm[7]}}, imm, 1'b0 } : reg_o1;
 

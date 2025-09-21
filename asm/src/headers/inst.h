@@ -15,8 +15,8 @@ typedef enum {
   OP_LUI = 0xA,
   OP_SCR = 0xB,
   OP_ADI = 0xC,
-  OP_MS_ = 0xD,
-  OP_ML_ = 0xE,
+  OP_ST_ = 0xD,
+  OP_LD_ = 0xE,
   OP_LDI = 0xF,
 
   OP_COUNT,

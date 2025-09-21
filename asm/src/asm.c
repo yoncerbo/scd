@@ -145,7 +145,8 @@ bool Asm_parse_inst(Asm *a) {
       Asm_end_inst(a);
       Asm_append_inst_imm(a, OP_B__, result.opcode - 0xf, imm);
       break;
-    case FORMAT_MEM:
+    case FORMAT_MEM_BYTE:
+    case FORMAT_MEM_HALF:
       r0 = Asm_parse_register(a);
       Asm_expected(a, TOK_COMMA);
       r1 = Asm_parse_register(a);
@@ -157,8 +158,9 @@ bool Asm_parse_inst(Asm *a) {
         print_error(a->source, tok.start, tok.len, "Immediate value cannot be bigger than 8");
         exit(1);
       }
+      uint8_t val = simm & 7 | ((result.format - FORMAT_MEM_BYTE) << 3);
       Asm_end_inst(a);
-      Asm_append_inst_reg(a, result.opcode, r0, r1, simm & 7);
+      Asm_append_inst_reg(a, result.opcode, r0, r1, val);
       break;
     case FORMAT_PSEUDO:
       switch (result.opcode) {
@@ -188,7 +190,7 @@ bool Asm_parse_inst(Asm *a) {
           break;
         case OP_JMI:
           Asm_parse_inst_imm1(a, &imm);
-          Asm_append_inst_imm(a, OP_JLI, 0, imm);
+          Asm_append_inst_imm(a, OP_JAL, 0, imm);
           break;
         case OP_CSR:
           Asm_parse_inst_reg2(a, &r0, &r1);
@@ -196,7 +198,7 @@ bool Asm_parse_inst(Asm *a) {
           break;
         case OP_CSI:
           Asm_parse_inst_imm1(a, &imm);
-          Asm_append_inst_imm(a, OP_JLI, 15, imm);
+          Asm_append_inst_imm(a, OP_JAL, 15, imm);
           break;
         case OP_RET:
           Asm_end_inst(a);

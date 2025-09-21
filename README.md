@@ -47,23 +47,22 @@ Simple cpu design in veriolog with assembler and emulator.
 | LUI | load upper immediate | A | I | `r0[15:8] = imm` | |
 | SCR | status/control registers | B | S | `scr[imm] ^= r1; r0 = scr[imm]` | |
 | ADI | add immediate | C | S | `r0 = r1 + sign_extend(imm)` | Z, C |
-| MR- | memory read | D | M | `memory[r1 + imm] = r0` | Z, C |
-| MW- | memory write | E | M | `r0 = memory[r1 + imm]` | Z, C |
+| LDB/H | load byte/half from memory | D | M | `memory[r1 + imm] = r0` | Z, C |
+| STB/H | store byte/half into memory | E | M | `r0 = memory[r1 + imm]` | Z, C |
 | LDI | load immediate | F | I | `r0 = sign_extend(imm)` | |
 
 #### Notes
 
-Jumps and branches ignore least significant bit in the address.
+Jump and branch instructions use ALU to calculate new pc, therefore they updates the flags.
 
-JLR instruction uses ALU to add r1 and r2, therefore it updates the flags.
-
-ROT instruction uses only 3 lowest bits of r2 and ignores the rest.
+ROT instruction uses only 4 least significant bits of r2 and ignores the rest.
 
 Instructions LDB and STB use ALU for calculating the addres,
 therefore they update the flags based on the address calculated.
 
 In M-type instrution can either address byte or half (16 bits).
 The immediate in M-type instrutions isn't sign extended.
+In LDH and STH instructions the immediate is shifted left by one.
 
 ### Instruction types
 
