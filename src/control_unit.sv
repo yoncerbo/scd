@@ -11,9 +11,11 @@ module ControlUnit (
   output reg_we, mem_we, mem_byte_half
 );
 
-wire cond, adi, ipc, wpc, spc, mem_re, ldi, imm3;
+reg [15:0] sc_regs [15:0];
+
 wire [7:0] imm;
 
+assign scr = ctrl_flags[10];
 assign lui = ctrl_flags[9];
 assign imm3 = ctrl_flags[8];
 assign cond = ctrl_flags[7];
@@ -43,7 +45,8 @@ assign mem_in = reg_o0;
 
 assign mem_byte_half = fetch_inst == 1 ? 1'b1 : inst[3];
 
-assign alu_b = adi == 1 ? simm16 : (imm3 == 1 ? {13'b0, inst[2:0]} : reg_o2);
+assign alu_b = adi == 1 ? simm16 : (imm3 == 1 ? {13'b0, inst[2:0]} : (
+  scr == 1 ? sc_regs[inst[3:0]] : reg_o2));
 
 initial begin
   fetch_inst <= 1;
@@ -64,6 +67,9 @@ always @(posedge clk) begin
       (cond_type[2] & ~flags[0]) | (cond_type[2] & ~flags[1]) | ~cond) begin
       if (wpc) pc <= alu_out[7:1];
       else if (ipc) pc <= imm[7:1];
+    end
+    if (scr) begin
+      sc_regs[inst[3:0]] <= alu_out;
     end
   end
   fetch_inst = ~fetch_inst;

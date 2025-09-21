@@ -21,13 +21,19 @@ initial begin
   end
 
   // #1 $readmemh("code.txt", mem.memory, 0, 127);
+
+  cpu.ctrl.sc_regs[0] <= 255;
   
   #1
-  mem.memory[0] <= 'hA101;
+  mem.memory[0] <= 'hF201;
+  mem.memory[1] <= 'hB100;
+  mem.memory[2] <= 'hB120;
 
   clk <= 0;
 
-  #4 $display(cpu.register_file.registers[1]);
+  #4 $display(cpu.register_file.registers[2]);
+  #4 $display("r1=", cpu.register_file.registers[1]);
+  #4 $display("r1=", cpu.register_file.registers[1]);
 
   $finish();
 end

@@ -45,7 +45,7 @@ Simple cpu design with assembler and emulator.
 | JAL | jump and link | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | `if (cond) { pc = imm }` | |
 | LUI | load upper immediate | A | I | `r0[15:8] = imm` | |
-| | | B | | |
+| SCR | status/control registers | B | S | `scr[imm] ^= r1; r0 = scr[imm]` | |
 | ADI | add immediate | C | S | `r0 = r1 + sign_extend(imm)` | Z, C |
 | MR- | memory read | D | M | `memory[r1 + imm] = r0` | Z, C |
 | MW- | memory write | E | M | `r0 = memory[r1 + imm]` | Z, C |
