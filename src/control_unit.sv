@@ -3,18 +3,19 @@
 module ControlUnit (
   input clk,
   input [1:0] flags,
-  input [7:0] ctrl_flags,
+  input [15:0] ctrl_flags,
   input [15:0] reg_o0, reg_o1, reg_o2, alu_out, mem_out,
   output [15:0] mem_addr, mem_in,
   output reg [15:0] inst,
   output [15:0] reg_in, alu_b,
-  output reg_we, mem_we, mem_byte_half,
-  input imm3
+  output reg_we, mem_we, mem_byte_half
 );
 
-wire cond, adi, ipc, wpc, spc, mem_re, ldi;
+wire cond, adi, ipc, wpc, spc, mem_re, ldi, imm3;
 wire [7:0] imm;
 
+assign lui = ctrl_flags[9];
+assign imm3 = ctrl_flags[8];
 assign cond = ctrl_flags[7];
 assign adi = ctrl_flags[6];
 assign ipc = ctrl_flags[5];
@@ -33,7 +34,8 @@ wire [15:0] imm16 = { imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], imm[7], im
 wire [15:0] simm16 = { imm[3], imm[3], imm[3], imm[3], imm[3], imm[3], imm[3],
   imm[3], imm[3], imm[3], imm[3], imm[3], imm[3:0] };
 
-assign reg_in = spc == 1 ? {pc, 1'b0} : (ldi == 0 ? (mem_re == 0 ? alu_out : mem_out) : imm16);
+assign reg_in = spc == 1 ? {pc, 1'b0} : (ldi == 1 ? imm16 : (
+  mem_re == 1 ? mem_out : (lui == 1 ? {imm, reg_o0[7:0]} : alu_out)));
 assign reg_we = ~(fetch_inst | mem_we);
 
 assign mem_addr = fetch_inst == 1 ? {pc, 1'b0} : alu_out;

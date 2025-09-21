@@ -40,16 +40,16 @@ Simple cpu design with assembler and emulator.
 | NOR | logical nor | 3 | R | `r0 = ~(r1 \| r2)` | Z, C |
 | AND | logical and | 4 | R | `r0 = r1 & r2` | Z, C |
 | ROT | rotate bits right | 5 | R | `r0 = rot_right(r1, r2)` | Z, C |
-| ROI | rotate right immediate | 6 | S | `r0 = rot_right(r1, imm)` | Z, C |
+| ROI | rotate right immediate | 6 | S | `r0 = rot_right(r1, sing_extend(imm))` | Z, C |
 | JLR | jump and link register | 7 | R | `r0 = pc + 2; pc = r1 + r2` | Z, C |
-| JAL | jump and link immediate | 8 | I | `r0 = pc + 2; pc = imm` | |
+| JAL | jump and link | 8 | I | `r0 = pc + 2; pc = imm` | |
 | B-- | branch instructions | 9 | B | `if (cond) { pc = imm }` | |
-| ADI | add 4-bit sign extended immediate | C | S | `r0 = r1 + imm` | Z, C |
+| LUI | load upper immediate | A | I | `r0[15:8] = imm` | |
+| | | B | | |
+| ADI | add immediate | C | S | `r0 = r1 + sign_extend(imm)` | Z, C |
 | MR- | memory read | D | M | `memory[r1 + imm] = r0` | Z, C |
 | MW- | memory write | E | M | `r0 = memory[r1 + imm]` | Z, C |
-| LDI | load immediate | F | I | `r0 = imm` | |
-| | | A | | |
-| | | B | | |
+| LDI | load immediate | F | I | `r0 = sign_extend(imm)` | |
 
 #### Notes
 

@@ -12,13 +12,14 @@ module CPU (
   output [15:0] mem_in
 );
 
-wire reg_we, imm3;
+wire reg_we;
 wire [1:0] flags;
-wire [7:0] ctrl_flags, alu_flags;
+wire [15:0] ctrl_flags;
+wire [7:0] alu_flags;
 wire [15:0] inst, alu_out, reg_in, reg_o0, reg_o1, reg_o2, alu_b;
 wire [15:0] mc_addr, mc_in, mc_out;
 
-InstRom inst_rom(inst[15:12], alu_flags, ctrl_flags, imm3);
+InstRom inst_rom(inst[15:12], alu_flags, ctrl_flags);
 
 MemoryController mc(clk, mem_we, mem_byte_half, mc_addr, mc_in, mc_out, mem_out, mem_in, mem_addr);
 
@@ -30,8 +31,7 @@ ControlUnit ctrl(
   mc_out, mc_addr, mc_in,
   inst,
   reg_in, alu_b,
-  reg_we, mem_we, mem_byte_half,
-  imm3
+  reg_we, mem_we, mem_byte_half
 );
 
 RegisterFile register_file(
